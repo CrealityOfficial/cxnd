@@ -11,13 +11,16 @@ namespace cxnd
 
 		if (size == 1)
 		{
+			trimesh::TriMesh* mesh = nullptr;
 			if (releaseInput)
+				mesh = inputs.at(0);
+			else
 			{
-				inputs.clear();
-				return inputs.at(0);
+				mesh = new trimesh::TriMesh();
+				*mesh = *inputs.at(0);
 			}
-			trimesh::TriMesh* mesh = new trimesh::TriMesh();
-			*mesh = *inputs.at(0);
+
+			inputs.clear();
 			return mesh;
 		}
 
