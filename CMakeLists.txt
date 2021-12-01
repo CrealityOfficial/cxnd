@@ -5,6 +5,12 @@ set(SRCS cxnd/interface.h
 		 cxnd/algrithm/dumplicate.cpp
 		 cxnd/algrithm/merge.h
 		 cxnd/algrithm/merge.cpp
+		 cxnd/algrithm/a3d.h
+		 cxnd/algrithm/a3d.cpp
+		 cxnd/struct/triangleaabbnode.h
+		 cxnd/struct/triangleaabbnode.cpp
+		 cxnd/struct/triangleaabbtree.h
+		 cxnd/struct/triangleaabbtree.cpp
 		 )
 		
 set(INCS)
