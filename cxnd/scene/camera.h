@@ -1,0 +1,9 @@
+#ifndef CXND_CAMERA_1638527203040_H
+#define CXND_CAMERA_1638527203040_H
+
+namespace cxnd
+{
+
+}
+
+#endif // CXND_CAMERA_1638527203040_H

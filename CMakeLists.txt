@@ -11,6 +11,12 @@ set(SRCS cxnd/interface.h
 		 cxnd/struct/triangleaabbnode.cpp
 		 cxnd/struct/triangleaabbtree.h
 		 cxnd/struct/triangleaabbtree.cpp
+		 cxnd/scene/camera.h
+		 cxnd/scene/camera.cpp
+		 cxnd/scene/pickable.h
+		 cxnd/scene/pickable.cpp
+		 cxnd/scene/selector.h
+		 cxnd/scene/selector.cpp
 		 )
 		
 set(INCS)
