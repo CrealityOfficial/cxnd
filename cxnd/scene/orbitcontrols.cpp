@@ -2,6 +2,8 @@
 #include "camera.h"
 #include "cameraspace.h"
 
+#include "trimesh2/quaternion.h"
+
 #include <math.h>
 
 namespace cxnd
