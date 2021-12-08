@@ -3,6 +3,7 @@
 #include "cxnd/interface.h"
 #include "ccglobal/container.h"
 #include "trimesh2/XForm.h"
+#include "trimesh2/Box.h"
 #include "cxnd/scene/eventhandlers.h"
 
 namespace cxnd
@@ -37,6 +38,8 @@ namespace cxnd
 		void setRotateEnabled(bool enabled);
 		void setScaleEnabled(bool enabled);
 		void setTranslateEnabled(bool enabled);
+		void fittingBox(const trimesh::box3& box, bool resetDir = true);
+		void updateNearFar(const trimesh::box3& box);
 	protected:
 		void notifyViewMatrix();
 		void notifyProjectionMatrix();

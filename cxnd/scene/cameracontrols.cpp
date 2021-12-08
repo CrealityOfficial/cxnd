@@ -30,6 +30,12 @@ namespace cxnd
 	{
 		m_width = width;
 		m_height = height;
+
+		if (m_camera)
+			m_camera->aspectRatio = m_width / m_height;
+
+		notifyScreenSize(m_width, m_height);
+		notifyProjectionMatrix();
 	}
 
 	bool CameraControls::rotateEnabled()
@@ -122,6 +128,8 @@ namespace cxnd
 		m_camera->position = position;
 		m_camera->viewCenter = viewCenter;
 		m_camera->upVector = upVector;
+
+		notifyViewMatrix();
 	}
 
 	void CameraControls::scaleCamera(float factor)
@@ -135,5 +143,63 @@ namespace cxnd
 		fovy /= factor;
 		if (fovy >= minFovy && fovy <= maxFovy)
 			m_camera->fovy = fovy;
+
+		notifyProjectionMatrix();
+	}
+
+	void CameraControls::fittingBox(const trimesh::box3& box, bool resetDir)
+	{
+		if (!m_camera)
+			return;
+
+		trimesh::vec3 center = box.center();
+		trimesh::vec3 size = box.size();
+
+		float fovy = m_camera->fovy * M_PIf / 180.0f;
+
+		auto f = [](float z, float x, float fovy)->float {
+			float r = sqrtf(x * x + z * z) / 2.0f;
+			return r / sinf(fovy / 2.0f);
+		};
+
+		float len1 = f(size.z, size.y, fovy);
+		float len2 = f(size.x, size.y, 2.0f * atanf(m_camera->aspectRatio * tanf(fovy / 2.0f)));
+		float len = len1 > len2 ? len1 : len2;
+
+		trimesh::vec3 up = trimesh::vec3(0.0f, 0.0f, 1.0f);
+		trimesh::vec3 dir = trimesh::vec3(0.0f, -1.0f, 0.0f);
+		if (!resetDir)
+		{
+			up = m_camera->upVector;
+			dir = m_camera->direction();
+		}
+		trimesh::vec3 eye = center + dir * len;
+
+		setCameraPose(eye, center, up);
+		updateNearFar(box);
+		notifyViewMatrix();
+	}
+
+	void CameraControls::updateNearFar(const trimesh::box3& box)
+	{
+		if (!m_camera)
+			return;
+
+		trimesh::vec3 cameraPosition = m_camera->position;
+		trimesh::vec3 cameraCenter = m_camera->viewCenter;
+		trimesh::vec3 cameraView = cameraCenter - cameraPosition;
+		trimesh::normalize(cameraView);
+
+		trimesh::vec3 center = box.center();
+		float r = trimesh::len(box.size()) / 2.0f;
+		float d = cameraView DOT(center - cameraPosition);
+		float dmin = d - 1.2f * r;
+		float dmax = d + 1.2f * r;
+
+		float nearpos = dmin < 1.0f ? (2.0f * r > 1.0f ? 0.1f : dmin) : dmin;
+		float farpos = dmax > 0.0f ? dmax : 3000.0f;
+
+		setCameraNearFar(nearpos, farpos);
+		notifyProjectionMatrix();
 	}
 }

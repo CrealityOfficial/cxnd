@@ -142,12 +142,11 @@ namespace cxnd
 		trimesh::vec3 newUpVector = m_camera->upVector;
 
 		setCameraPose(newPosition, newViewCenter, newUpVector);
-		notifyViewMatrix();
 	}
 
 	void OrbitControls::performRotate(MouseSnap& snap1, MouseSnap& snap2)
 	{
-		trimesh::vec2 delta = trimesh::vec2(snap2.x - snap1.x, snap2.y - snap2.y);
+		trimesh::vec2 delta = trimesh::vec2(snap2.x - snap1.x, snap2.y - snap1.y);
 
 		float hangle = -0.1f * (float)delta.x;
 		trimesh::quaternion hq = trimesh::quaternion::fromAxisAndAngle(trimesh::vec3(0.0f, 0.0f, 1.0f), hangle);
@@ -191,6 +190,5 @@ namespace cxnd
 			return;
 
 		setCameraPose(newPosition, viewCenter, up);
-		notifyViewMatrix();
 	}
 }

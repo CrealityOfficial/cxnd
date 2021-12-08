@@ -74,6 +74,13 @@ namespace cxnd
 		return v;
 	}
 
+	trimesh::vec3 Camera::direction()
+	{
+		trimesh::vec3 dir = viewCenter - position;
+		trimesh::normalize(dir);
+		return dir;
+	}
+
 	float Camera::verticalAngle()
 	{
 		trimesh::vec3 v = trimesh::vec3(0.0f, 0.0f, 1.0f);

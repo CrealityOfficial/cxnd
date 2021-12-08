@@ -23,6 +23,7 @@ namespace cxnd
 		trimesh::fxform projectionMatrix();
 		trimesh::vec3 horizontal();
 		trimesh::vec3 vertical();
+		trimesh::vec3 direction();
 		float verticalAngle();
 
 		CameraProjectionType type;
