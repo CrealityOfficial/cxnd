@@ -115,7 +115,7 @@ namespace cxnd
 		{
 			int faceID = -1;
 			int _primitiveID = -1;
-			bool picked = source->pick(point, &faceID);
+			bool picked = source->pick(point.x, point.y, &faceID);
 			if (picked)
 			{
 				for (Pickable* p : pickables)
