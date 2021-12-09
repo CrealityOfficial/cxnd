@@ -107,7 +107,7 @@ namespace cxnd
 		noPrimitiveChanged(m_noPrimitive);
 	}
 
-	Pickable* checkPickableFromList(PickSource* source, const trimesh::ivec2& point,
+	Pickable* checkPickableFromList(PickSource* source, float x, float y,
 		std::list<Pickable*>& pickables, int* primitiveID)
 	{
 		Pickable* pickable = nullptr;
@@ -115,7 +115,7 @@ namespace cxnd
 		{
 			int faceID = -1;
 			int _primitiveID = -1;
-			bool picked = source->pick(point.x, point.y, &faceID);
+			bool picked = source->pick(x, y, &faceID);
 			if (picked)
 			{
 				for (Pickable* p : pickables)

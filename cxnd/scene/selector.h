@@ -31,11 +31,11 @@ namespace cxnd
 		void removeTracer(SelectorTracer* tracer);
 		std::list<Pickable*> selectionmPickables();
 
-		Pickable* check(const trimesh::ivec2& p, int* primitiveID = nullptr);
+		Pickable* check(float x, float y, int* primitiveID = nullptr);
 
 		void clearHover();
-		bool hover(const trimesh::ivec2& p);
-		void select(const trimesh::ivec2& p);
+		bool hover(float x, float y);
+		void select(float x, float y);
 		void select(Pickable* pickable);
 		void appendSelect(Pickable* pickable);
 		void selectGroup(Pickable* pickable);

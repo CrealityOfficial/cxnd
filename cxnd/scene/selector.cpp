@@ -82,9 +82,9 @@ namespace cxnd
 		return pickables;
 	}
 
-	Pickable* Selector::check(const trimesh::ivec2& p, int* primitiveID)
+	Pickable* Selector::check(float x, float y, int* primitiveID)
 	{
-		Pickable* pickable = checkPickableFromList(m_pickSource, p, m_pickables, primitiveID);
+		Pickable* pickable = checkPickableFromList(m_pickSource, x, y, m_pickables, primitiveID);
 
 		return pickable;
 	}
@@ -152,11 +152,10 @@ namespace cxnd
 		}
 	}
 
-	bool Selector::hover(const trimesh::ivec2& p)
+	bool Selector::hover(float x, float y)
 	{
-
 		int primitiveID = -1;
-		Pickable* hoverEntity = check(p, &primitiveID);
+		Pickable* hoverEntity = check(x, y, &primitiveID);
 
 		if (m_hoverPickable == hoverEntity)
 		{
@@ -168,6 +167,7 @@ namespace cxnd
 
 			return false;
 		}
+
 		if (m_hoverPickable)
 		{
 			if (m_hoverPickable->isGroup())
@@ -182,6 +182,9 @@ namespace cxnd
 			}
 		}
 
+		if (hoverEntity && hoverEntity->selected())
+			return false;
+
 		m_hoverPickable = hoverEntity;
 
 		if (m_hoverPickable && !m_hoverPickable->isGroup())
@@ -191,12 +194,12 @@ namespace cxnd
 		return true;
 	}
 
-	void Selector::select(const trimesh::ivec2& p)
+	void Selector::select(float x, float y)
 	{
 		if (selectNotifying)
 			return;
 
-		Pickable* pickable = check(p, nullptr);
+		Pickable* pickable = check(x, y, nullptr);
 
 		if (pickable && !pickable->enableSelect())
 			return;

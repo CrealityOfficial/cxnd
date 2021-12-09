@@ -8,8 +8,8 @@ namespace cxnd
 		, m_pickX(- 1.0f)
 		, m_pickY(- 1.0f)
 		, m_pickTime(- 0.0)
-		, m_xyDelta(0.0f)
-		, m_timeDelta(0.0)
+		, m_xyDelta(2.0f)
+		, m_timeDelta(0.3)
 	{
 	}
 
@@ -79,7 +79,7 @@ namespace cxnd
 
 	bool ClickEventChecker::nullCheck()
 	{
-		if ((m_pickX >= 0) && (m_pickY >= 0) && (m_pickTime > 0) && (m_button > 0))
+		if ((m_pickX >= 0) && (m_pickY >= 0) && (m_pickTime > 0) && (m_button >= 0))
 			return true;
 		return false;
 	}

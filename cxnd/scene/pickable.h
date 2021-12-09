@@ -58,10 +58,10 @@ namespace cxnd
 	public:
 		virtual ~PickSource() {}
 
-		virtual bool pick(int x, int y, int* faceID) = 0;
+		virtual bool pick(float x, float y, int* faceID) = 0;
 	};
 
-	CXND_API Pickable* checkPickableFromList(PickSource* source, const trimesh::ivec2& point,
+	CXND_API Pickable* checkPickableFromList(PickSource* source, float x, float y,
 		std::list<Pickable*>& list, int* primitiveID);
 
 }
