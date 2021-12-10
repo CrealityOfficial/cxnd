@@ -1,0 +1,76 @@
+#ifndef CXND_SNODE_1639130199169_H
+#define CXND_SNODE_1639130199169_H
+#include "trimesh2/XForm.h"
+#include "trimesh2/Vec.h"
+#include "trimesh2/quaternion.h"
+#include "ccglobal/container.h"
+
+namespace cxnd
+{
+	class SNode;
+	class SNodeTracer
+	{
+	public:
+		virtual ~SNodeTracer() {}
+		virtual void notifyNodeChanged(SNode* node) = 0;
+	};
+
+	class SNode : public LContainer<SNodeTracer>
+	{
+	public:
+		SNode();
+		~SNode();
+
+		void setParent(SNode* node);
+		SNode* parent();
+
+		trimesh::vec3 center();
+		void setCenter(const trimesh::vec3& center, bool update = true);
+
+		void setLocalScale(const trimesh::vec3& scale, bool update = true);
+		void resetLocalScale(bool update = true);
+		trimesh::vec3 localScale();
+
+		trimesh::quaternion localQuaternion();
+		void setLocalQuaternion(const trimesh::quaternion& q, bool update = true);
+		void resetLocalQuaternion(bool update = true);
+
+		void setLocalPosition(const trimesh::vec3& position, bool update = true);
+		void resetLocalPosition(bool update = true);
+		trimesh::vec3 localPosition();
+
+		trimesh::fxform globalMatrix();
+		trimesh::fxform localMatrix();
+
+		void translate(const trimesh::vec3& t);
+		void scale(const trimesh::vec3& s);
+
+		////// matrix apply
+		void applyTranslate(const trimesh::vec3& t);
+		void applyScale(const trimesh::vec3& s);
+		void applyRotate(const trimesh::vec3& axis, float angle, bool local);
+	protected:
+		void applyXf(const trimesh::fxform& xf);
+	protected:
+		void updateMatrix();
+
+		void addChild(SNode* node);
+		void removeChild(SNode* node);
+	protected:
+		trimesh::vec3 m_localCenter;
+
+		trimesh::vec3 m_localPosition;
+		trimesh::vec3 m_localScale;
+		trimesh::quaternion m_localRotate;
+
+		trimesh::fxform m_globalMatrix;
+		trimesh::fxform m_localMatrix;
+		bool m_localDirty;
+
+		SNode* m_parent;
+		std::list<SNode*> m_children;
+		bool m_updating;
+	};
+}
+
+#endif // CXND_SNODE_1639130199169_H

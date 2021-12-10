@@ -13,6 +13,8 @@ set(SRCS cxnd/interface.h
 		 cxnd/struct/triangleaabbtree.cpp
 		 cxnd/struct/ray.h
 		 cxnd/struct/ray.cpp
+		 cxnd/scene/snode.h
+		 cxnd/scene/snode.cpp
 		 cxnd/scene/camera.h
 		 cxnd/scene/camera.cpp
 		 cxnd/scene/cameraspace.h
