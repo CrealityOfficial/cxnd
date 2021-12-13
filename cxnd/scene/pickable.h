@@ -1,7 +1,6 @@
 #ifndef CXND_PICKABLE_1638527203039_H
 #define CXND_PICKABLE_1638527203039_H
 #include "cxnd/interface.h"
-#include <trimesh2/Vec.h>
 #include <list>
 
 namespace cxnd
