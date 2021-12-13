@@ -3,6 +3,7 @@
 #include "cxnd/interface.h"
 #include "trimesh2/Vec.h"
 #include "trimesh2/XForm.h"
+#include "cxnd/struct/ray.h"
 
 namespace cxnd
 {
@@ -25,6 +26,7 @@ namespace cxnd
 		trimesh::vec3 vertical();
 		trimesh::vec3 direction();
 		float verticalAngle();
+		Ray screenRay(const trimesh::vec2& pixel);
 
 		CameraProjectionType type;
 
@@ -41,6 +43,9 @@ namespace cxnd
 		float bottom;
 		float left;
 		float right;
+
+		float width;
+		float height;
 	};
 }
 

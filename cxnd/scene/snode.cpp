@@ -160,13 +160,16 @@ namespace cxnd
 			m_globalMatrix = m * m_globalMatrix;
 		}
 
+		matrixChanged(m_globalMatrix);
 		for (SNode* node : m_children)
 			node->updateMatrix();
 
-		notify([this](SNodeTracer* tracer) {
-			tracer->notifyNodeChanged(this);
-			});
 		m_updating = false;
+	}
+
+	void SNode::matrixChanged(const trimesh::fxform& matrix)
+	{
+
 	}
 
 	trimesh::fxform SNode::globalMatrix()

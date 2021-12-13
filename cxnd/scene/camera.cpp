@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "cameraspace.h"
 
 namespace cxnd
 {
@@ -12,6 +13,8 @@ namespace cxnd
 		, bottom(-1.0f)
 		, left(-1.0f)
 		, right(1.0f)
+		, width(10.0f)
+		, height(10.0f)   //fit with aspectRatio
 	{
 
 	}
@@ -88,5 +91,10 @@ namespace cxnd
 		trimesh::normalize(dir);
 		float angle = acosf(v DOT dir);
 		return angle;
+	}
+
+	Ray Camera::screenRay(const trimesh::vec2& pixel)
+	{
+		return cxnd::screenRay(*this, pixel, trimesh::vec2(width, height));
 	}
 }

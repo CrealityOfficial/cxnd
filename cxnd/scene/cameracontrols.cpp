@@ -32,7 +32,11 @@ namespace cxnd
 		m_height = height;
 
 		if (m_camera)
+		{
 			m_camera->aspectRatio = m_width / m_height;
+			m_camera->width = m_width;
+			m_camera->height = m_height;
+		}
 
 		notifyScreenSize(m_width, m_height);
 		notifyProjectionMatrix();

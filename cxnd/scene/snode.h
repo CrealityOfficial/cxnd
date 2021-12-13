@@ -1,21 +1,14 @@
 #ifndef CXND_SNODE_1639130199169_H
 #define CXND_SNODE_1639130199169_H
+#include "cxnd/interface.h"
 #include "trimesh2/XForm.h"
 #include "trimesh2/Vec.h"
 #include "trimesh2/quaternion.h"
-#include "ccglobal/container.h"
+#include <list>
 
 namespace cxnd
 {
-	class SNode;
-	class SNodeTracer
-	{
-	public:
-		virtual ~SNodeTracer() {}
-		virtual void notifyNodeChanged(SNode* node) = 0;
-	};
-
-	class SNode : public LContainer<SNodeTracer>
+	class CXND_API SNode
 	{
 	public:
 		SNode();
@@ -53,6 +46,7 @@ namespace cxnd
 		void applyXf(const trimesh::fxform& xf);
 	protected:
 		void updateMatrix();
+		virtual void matrixChanged(const trimesh::fxform& matrix);
 
 		void addChild(SNode* node);
 		void removeChild(SNode* node);
