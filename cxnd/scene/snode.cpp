@@ -1,4 +1,5 @@
 #include "snode.h"
+#include "trimesh2/XForm.h"
 
 namespace cxnd
 {

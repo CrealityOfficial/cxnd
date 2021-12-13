@@ -96,6 +96,31 @@ namespace cxnd
 		return true;
 	}
 
+	CXND_API bool rayIntersectBoundingBox(const trimesh::dvec3 orig, const trimesh::dvec3 dir, const trimesh::dbox3& b)
+	{
+		bool intersected = false;
+
+		trimesh::dvec3 bbMin = b.min;
+		trimesh::dvec3 bbMax = b.max;
+
+		trimesh::dbox3 boxX;
+		boxX += trimesh::dvec3(bbMin.x, orig.y + dir.y * ((bbMin.x - orig.x) / dir.x), orig.z + dir.z * ((bbMin.x - orig.x) / dir.x));
+		boxX += trimesh::dvec3(bbMax.x, orig.y + dir.y * ((bbMax.x - orig.x) / dir.x), orig.z + dir.z * ((bbMax.x - orig.x) / dir.x));
+
+		trimesh::dbox3 boxY;
+		boxY += trimesh::dvec3(orig.x + dir.x * ((bbMin.y - orig.y) / dir.y), bbMin.y, orig.z + dir.z * ((bbMin.y - orig.y) / dir.y));
+		boxY += trimesh::dvec3(orig.x + dir.x * ((bbMax.y - orig.y) / dir.y), bbMax.y, orig.z + dir.z * ((bbMax.y - orig.y) / dir.y));
+
+		trimesh::dbox3 boxZ;
+		boxZ += trimesh::dvec3(orig.x + dir.x * ((bbMin.z - orig.z) / dir.z), orig.y + dir.y * ((bbMin.z - orig.z) / dir.z), bbMin.z);
+		boxZ += trimesh::dvec3(orig.x + dir.x * ((bbMax.z - orig.z) / dir.z), orig.y + dir.y * ((bbMax.z - orig.z) / dir.z), bbMax.z);
+
+		if (boxX.intersects(boxY) && boxX.intersects(boxZ) && boxZ.intersects(boxY))
+			intersected = true;
+
+		return intersected;
+	}
+
 	bool PointinTriangle(trimesh::vec3 A, trimesh::vec3 B, trimesh::vec3 C, trimesh::vec3 P)
 	{
 		trimesh::vec3 v0 = C - A;
