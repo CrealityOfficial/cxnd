@@ -220,4 +220,9 @@ namespace cxnd
 		m_localMatrix = xf * m_localMatrix;
 		updateMatrix();
 	}
+
+	trimesh::box3 SNode::calculateBox()
+	{
+		return trimesh::box3();
+	}
 }

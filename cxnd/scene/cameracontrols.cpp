@@ -175,7 +175,7 @@ namespace cxnd
 		if (!resetDir)
 		{
 			up = m_camera->upVector;
-			dir = m_camera->direction();
+			dir = - m_camera->direction();
 		}
 		trimesh::vec3 eye = center + dir * len;
 
