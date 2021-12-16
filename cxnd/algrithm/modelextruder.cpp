@@ -142,12 +142,18 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 	return true;
 }
 
-trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, double bottomThickness, bool roofFlag)
+trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, double bottomThickness, bool roofFlag, ExtrudedMeshTopoData** topoData)
 {
 	if (m_2DMouldVertices.size() < 3 || height <= 0.0 || wallThickness <= 0.0 || bottomThickness <= 0.0)
 		return nullptr;
 
 	trimesh::TriMesh* extrusionMesh = new trimesh::TriMesh;
+
+	// topo data test
+	if (topoData)
+	{
+		*topoData = new ExtrudedMeshTopoData(extrusionMesh, m_origin);
+	}
 
 	int i;
 	int mouldPosNum = m_2DMouldVertices.size();
@@ -191,10 +197,10 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	{
 		for (i = 0; i < mouldPosNum; i++)
 		{
-			trimesh::dvec3 outterPos = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i]]);
-			trimesh::dvec3 outterPosNeig1 = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i - 1 < 0 ? mouldPosNum - 1 : i - 1]]);
-			trimesh::dvec3 outterPosNeig2 = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i + 1 >= mouldPosNum ? 0 : i + 1]]);
-			trimesh::dvec3 innerPos = outterPos + wallThickness * trimesh::normalized(trimesh::normalized(outterPosNeig1 - outterPos) + trimesh::normalized(outterPosNeig2 - outterPos));
+			trimesh::dvec3 outerPos = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i]]);
+			trimesh::dvec3 outerPosNeig1 = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i - 1 < 0 ? mouldPosNum - 1 : i - 1]]);
+			trimesh::dvec3 outerPosNeig2 = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i + 1 >= mouldPosNum ? 0 : i + 1]]);
+			trimesh::dvec3 innerPos = outerPos + wallThickness * trimesh::normalized(trimesh::normalized(outerPosNeig1 - outerPos) + trimesh::normalized(outerPosNeig2 - outerPos));
 			innerWallBottomPosIndices.push_back(extrusionMesh->vertices.size());
 			extrusionMesh->vertices.push_back(trimesh::vec3(innerPos));
 		}
@@ -205,10 +211,10 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 		std::vector<trimesh::dvec3> innerWallBottomCtrlPosArray;
 		for (i = 0; i < m_2DMouldCtrlVertices.size(); i++)
 		{
-			trimesh::dvec3 outterPos = m_2DMouldCtrlVertices[i];
-			trimesh::dvec3 outterPosNeig1 = m_2DMouldCtrlVertices[i - 1 < 0 ? m_2DMouldCtrlVertices.size() - 1 : i - 1];
-			trimesh::dvec3 outterPosNeig2 = m_2DMouldCtrlVertices[i + 1 >= m_2DMouldCtrlVertices.size() ? 0 : i + 1];
-			trimesh::dvec3 innerPos = outterPos + wallThickness * trimesh::normalized(trimesh::normalized(outterPosNeig1 - outterPos) + trimesh::normalized(outterPosNeig2 - outterPos));
+			trimesh::dvec3 outerPos = m_2DMouldCtrlVertices[i];
+			trimesh::dvec3 outerPosNeig1 = m_2DMouldCtrlVertices[i - 1 < 0 ? m_2DMouldCtrlVertices.size() - 1 : i - 1];
+			trimesh::dvec3 outerPosNeig2 = m_2DMouldCtrlVertices[i + 1 >= m_2DMouldCtrlVertices.size() ? 0 : i + 1];
+			trimesh::dvec3 innerPos = outerPos + wallThickness * trimesh::normalized(trimesh::normalized(outerPosNeig1 - outerPos) + trimesh::normalized(outerPosNeig2 - outerPos));
 			innerPos = innerPos + bottomThickness * zDir;
 			innerWallBottomCtrlPosArray.push_back(innerPos);
 		}
@@ -235,27 +241,35 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 		}
 	}
 
-	std::vector<int> outterWallUpperPosIndices;
+	std::vector<int> outerWallUpperPosIndices;
 	std::vector<int> innerWallUpperPosIndices;
 	for (i = 0; i < mouldPosNum; i++)
 	{
-		trimesh::dvec3 outterPos = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i]]);
+		trimesh::dvec3 outerPos = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i]]);
 		trimesh::dvec3 innerPos = trimesh::dvec3(extrusionMesh->vertices[innerWallBottomPosIndices[i]]);
 
-		trimesh::dvec3 outterWallUpperPos = outterPos + height * zDir;
+		trimesh::dvec3 outerWallUpperPos = outerPos + height * zDir;
 		trimesh::dvec3 innerWallUpperPos = innerPos + height * zDir;
 
-		outterWallUpperPosIndices.push_back(extrusionMesh->vertices.size());
-		extrusionMesh->vertices.push_back(trimesh::vec3(outterWallUpperPos));
+		outerWallUpperPosIndices.push_back(extrusionMesh->vertices.size());
+		extrusionMesh->vertices.push_back(trimesh::vec3(outerWallUpperPos));
 
 		innerWallUpperPosIndices.push_back(extrusionMesh->vertices.size());
 		extrusionMesh->vertices.push_back(trimesh::vec3(innerWallUpperPos));
 	}
 
-	generateFaces(bottomUpperPosIndices, innerWallBottomPosIndices, extrusionMesh, true);
-	generateFaces(bottomUpperPosIndices, outterWallUpperPosIndices, extrusionMesh, true, true);
+	// topo data test
+	std::vector<int> outerWallFaceIndices;
+	//generateFaces(bottomUpperPosIndices, innerWallBottomPosIndices, extrusionMesh, true);
+	generateFaces(bottomUpperPosIndices, outerWallUpperPosIndices, extrusionMesh, true, true, &outerWallFaceIndices);
 	generateFaces(innerWallBottomPosIndices, innerWallUpperPosIndices, extrusionMesh, true);
-	generateFaces(outterWallUpperPosIndices, innerWallUpperPosIndices, extrusionMesh, true, true);
+	generateFaces(outerWallUpperPosIndices, innerWallUpperPosIndices, extrusionMesh, true, true);
+
+	// topo data test
+	if (topoData)
+	{
+		(*topoData)->setWallOuterData(bottomUpperPosIndices, outerWallUpperPosIndices, outerWallFaceIndices);
+	}
 
 	// ·â¶¥
 	if (roofFlag)
@@ -263,14 +277,14 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 		std::vector<int> roofUpperPosIndices;
 		for (i = 0; i < mouldPosNum; i++)
 		{
-			trimesh::dvec3 upperWallPos = trimesh::dvec3(extrusionMesh->vertices[outterWallUpperPosIndices[i]]);
+			trimesh::dvec3 upperWallPos = trimesh::dvec3(extrusionMesh->vertices[outerWallUpperPosIndices[i]]);
 			trimesh::dvec3 upperRoofPos = upperWallPos + bottomThickness * zDir;
 			roofUpperPosIndices.push_back(extrusionMesh->vertices.size());
 			extrusionMesh->vertices.push_back(trimesh::vec3(upperRoofPos));
 		}
 
-		generateFaces(roofOriginIndex, outterWallUpperPosIndices, extrusionMesh);
-		generateFaces(outterWallUpperPosIndices, roofUpperPosIndices, extrusionMesh, true, true);
+		generateFaces(roofOriginIndex, outerWallUpperPosIndices, extrusionMesh);
+		generateFaces(outerWallUpperPosIndices, roofUpperPosIndices, extrusionMesh, true, true);
 		generateFaces(roofUpperOriginIndex, roofUpperPosIndices, extrusionMesh, true);
 	}
 
@@ -282,7 +296,7 @@ trimesh::dvec3 ModelExtruder::BezierSample(double t, trimesh::dvec3 preCtrl, tri
 	return (1 - t) * (1 - t) * preCtrl + 2 * t * (1 - t) * midCtrl + t * t * postCtrl;
 }
 
-void ModelExtruder::generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh, bool ringFlag, bool ccwFlag)
+void ModelExtruder::generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh, bool ringFlag, bool ccwFlag, std::vector<int>* newFaceIndices)
 {
 	int i, j;
 	int fvIndexA = 0, fvIndexB = 1, fvIndexC = 2;
@@ -299,11 +313,15 @@ void ModelExtruder::generateFaces(std::vector<int> indicesA, std::vector<int> in
 		face[fvIndexB] = indicesA[i - 1];
 		face[fvIndexC] = indicesB[j - 1];
 		resultMesh->faces.push_back(face);
+		if (newFaceIndices)
+			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
 
 		face[fvIndexA] = indicesA[i];
 		face[fvIndexB] = indicesB[j - 1];
 		face[fvIndexC] = indicesB[j];
 		resultMesh->faces.push_back(face);
+		if (newFaceIndices)
+			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
 
 		if (i < indicesA.size())
 			i++;
@@ -317,15 +335,19 @@ void ModelExtruder::generateFaces(std::vector<int> indicesA, std::vector<int> in
 		face[fvIndexB] = indicesA[i - 1];
 		face[fvIndexC] = indicesB[j - 1];
 		resultMesh->faces.push_back(face);
+		if (newFaceIndices)
+			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
 
 		face[fvIndexA] = indicesA[0];
 		face[fvIndexB] = indicesB[j - 1];
 		face[fvIndexC] = indicesB[0];
 		resultMesh->faces.push_back(face);
+		if (newFaceIndices)
+			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
 	}
 }
 
-void ModelExtruder::generateFaces(int originIndex, std::vector<int> indices, trimesh::TriMesh* resultMesh, bool ccwFlag)
+void ModelExtruder::generateFaces(int originIndex, std::vector<int> indices, trimesh::TriMesh* resultMesh, bool ccwFlag, std::vector<int>* newFaceIndices)
 {
 	int i;
 	int fvIndexA = 0, fvIndexB = 1, fvIndexC = 2;
@@ -342,11 +364,15 @@ void ModelExtruder::generateFaces(int originIndex, std::vector<int> indices, tri
 		face[fvIndexB] = indices[i - 1];
 		face[fvIndexC] = originIndex;
 		resultMesh->faces.push_back(face);
+		if (newFaceIndices)
+			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
 	}
 
 	face[fvIndexA] = indices[0];
 	face[fvIndexB] = indices[i - 1];
 	face[fvIndexC] = originIndex;
 	resultMesh->faces.push_back(face);
+	if (newFaceIndices)
+		(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
 }
 
