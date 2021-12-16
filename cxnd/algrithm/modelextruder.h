@@ -7,6 +7,65 @@
 
 namespace cxnd
 {
+	// 柱体网格的拓扑信息
+	class CXND_API ExtrudedMeshTopoData
+	{
+	public:
+		ExtrudedMeshTopoData(trimesh::TriMesh* mesh, trimesh::dvec3 origin = trimesh::dvec3(0.0, 0.0, 0.0))
+			: m_origin(origin)
+			, m_mesh(mesh)
+		{
+		}
+		~ExtrudedMeshTopoData() {}
+
+		//void setRoofData();
+		//void setBottomData();
+		//void setWallData();
+		void setWallOuterData(std::vector<int>& lowerVertexIndices, std::vector<int>& upperVertexIndices, std::vector<int>& faceIndices)
+		{
+			m_wallOuterLowerVertexIndices = lowerVertexIndices;
+			m_wallOuterUpperVertexIndices = upperVertexIndices;
+			m_wallOuterFaceIndices = faceIndices;
+		}
+		//void setWallInnerData();
+
+		trimesh::TriMesh* getMesh() { return m_mesh; }
+		trimesh::dvec3 getOrigin() { return m_origin; }
+
+		std::vector<int> getWallOuterLowerVertexIndices() { return m_wallOuterLowerVertexIndices; }
+		std::vector<int> getWallOuterUpperVertexIndices() { return m_wallOuterUpperVertexIndices; }
+		std::vector<int> getWallOuterFaceIndices() { return m_wallOuterFaceIndices; }
+
+	private:
+		// 网格原点
+		trimesh::dvec3 m_origin;
+		// 模型网格
+		trimesh::TriMesh* m_mesh;
+		
+		// 上底面中心点
+		// 上底面外围顶点序列
+		// 上底面网格
+		
+
+		// 下底面中心点
+		// 下底面外围顶点序列
+		// 下底面网格
+
+
+		// 侧面网格
+		
+		// 侧面外壁下顶点序列 *
+		std::vector<int> m_wallOuterLowerVertexIndices;
+		// 侧面外壁上顶点序列 *
+		std::vector<int> m_wallOuterUpperVertexIndices;
+		// 侧面外壁网格 *
+		std::vector<int> m_wallOuterFaceIndices;
+
+		// 侧面内壁下顶点序列
+		// 侧面内壁上顶点序列
+		// 侧面内壁网格                                     
+	};
+
 	class CXND_API ModelExtruder
 	{
 	public:
@@ -21,14 +80,14 @@ namespace cxnd
 			bool roundAngleFlag = false, double roundAngleRadius = 0.1,
 			trimesh::dvec3 origin = trimesh::dvec3(0.0, 0.0, 0.0));
 		// 基于底面模板进行 z 轴方向的拉伸
-		trimesh::TriMesh* extrude(double height, double wallThickness, double bottomThickness, bool roofFlag = false);
+		trimesh::TriMesh* extrude(double height, double wallThickness, double bottomThickness, bool roofFlag = false, ExtrudedMeshTopoData** topoData = nullptr);
 
 	private:
 		trimesh::dvec3 BezierSample(double t, trimesh::dvec3 preCtrl, trimesh::dvec3 midCtrl, trimesh::dvec3 postCtrl);
 		// 在两个顶点序列之间构建三角面
-		void generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh, bool ringFlag, bool ccwFlag = false);
+		void generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh, bool ringFlag, bool ccwFlag = false, std::vector<int>* newFaceIndices = nullptr);
 		// 在顶点和顶点序列之间构建扇形三角面
-		void generateFaces(int originIndex, std::vector<int> indices, trimesh::TriMesh* resultMesh, bool ccwFlag = false);
+		void generateFaces(int originIndex, std::vector<int> indices, trimesh::TriMesh* resultMesh, bool ccwFlag = false, std::vector<int>* newFaceIndices = nullptr);
 
 	protected:
 		bool m_roundAngleFlag;
