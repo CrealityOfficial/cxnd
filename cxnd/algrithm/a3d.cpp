@@ -162,4 +162,52 @@ namespace cxnd
 		return rb;
 	}
 
+	float angleOfVector3D2(const trimesh::vec3& v1, const trimesh::vec3& v2)
+	{
+		float radian = radianOfVector3D2(v1, v2);
+		return radian * 180.0f / (float)M_PI;
+	}
+
+	float radianOfVector3D2(const trimesh::vec3& v1, const trimesh::vec3& v2)
+	{
+		double denominator = sqrt((double)trimesh::len2(v1) * (double)trimesh::len2(v2));
+		double cosinus = 0.0;
+
+		if (denominator < INT_MIN)
+			cosinus = 1.0; // cos (1)  = 0 degrees
+
+		cosinus = (double)(v1 DOT v2) / denominator;
+		cosinus = cosinus > 1.0 ? 1.0 : (cosinus < -1.0 ? -1.0 : cosinus);
+		double angle = acos(cosinus);
+#ifdef WIN32
+		if (!_finite(angle) || angle > M_PI)
+			angle = 0.0;
+#elif __APPLE__
+		if (!finite(angle) || angle > M_PI)
+			angle = 0.0;
+#else
+		if (!__finite(angle) || angle > M_PI)
+			angle = 0.0;
+#endif
+		return (float)angle;
+	}
+
+	trimesh::quaternion quaternionFromVector3D2(const trimesh::vec3& v1, const trimesh::vec3& v2)
+	{
+		trimesh::vec3 nv1 = trimesh::normalized(v1);
+		trimesh::vec3 nv2 = trimesh::normalized(v2);
+
+		float angle = angleOfVector3D2(nv1, nv2);
+		trimesh::vec3 axis = trimesh::vec3(1.0f, 0.0f, 0.0f);
+		if (angle < 180.0f)
+		{
+			axis = nv2 TRICROSS nv1;
+			trimesh::normalize(axis);
+		}
+
+		trimesh::quaternion q = trimesh::quaternion::fromAxisAndAngle(axis, angle);
+		q.normalize();
+		return q;
+	}
+
 }

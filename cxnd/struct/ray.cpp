@@ -27,7 +27,7 @@ namespace cxnd
 	{
 	}
 
-	bool Ray::collidePlane(const trimesh::vec3& planeCenter, const trimesh::vec3& planeDir, trimesh::vec3& collide)
+	bool Ray::collidePlane(const trimesh::vec3& planeCenter, const trimesh::vec3& planeDir, trimesh::vec3& collide) const
 	{
 		float l = dir DOT planeDir;
 		if (l == 0.0f) 

@@ -14,7 +14,7 @@ namespace cxnd
 
 		~Ray();
 
-		bool collidePlane(const trimesh::vec3& planeCenter, const trimesh::vec3& planeDir, trimesh::vec3& collide);
+		bool collidePlane(const trimesh::vec3& planeCenter, const trimesh::vec3& planeDir, trimesh::vec3& collide) const;
 
 		trimesh::vec3 start;
 		trimesh::vec3 dir;
