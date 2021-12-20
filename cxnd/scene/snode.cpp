@@ -1,5 +1,6 @@
 #include "snode.h"
 #include "trimesh2/XForm.h"
+#include "cxnd/algrithm/a3d.h"
 
 namespace cxnd
 {
@@ -213,6 +214,22 @@ namespace cxnd
 		}
 		trimesh::quaternion q = trimesh::quaternion::fromAxisAndAngle(_axis, angle);
 		setLocalQuaternion(q * m_localRotate);
+	}
+
+	void SNode::applyRotate(const trimesh::vec3& v1, const trimesh::vec3& v2, bool local)
+	{
+		trimesh::vec3 nv1 = trimesh::normalized(v1);
+		trimesh::vec3 nv2 = trimesh::normalized(v2);
+
+		float angle = angleOfVector3D2(nv1, nv2);
+		trimesh::vec3 axis = trimesh::vec3(1.0f, 0.0f, 0.0f);
+		if (angle < 180.0f)
+		{
+			axis = nv2 TRICROSS nv1;
+			trimesh::normalize(axis);
+		}
+
+		applyRotate(axis, angle, local);
 	}
 
 	void SNode::applyXf(const trimesh::fxform& xf)

@@ -43,7 +43,7 @@ namespace cxnd
 		void applyTranslate(const trimesh::vec3& t);
 		void applyScale(const trimesh::vec3& s);
 		void applyRotate(const trimesh::vec3& axis, float angle, bool local);
-
+		void applyRotate(const trimesh::vec3& v1, const trimesh::vec3& v2, bool local);
 		virtual trimesh::box3 calculateBox();
 	protected:
 		void applyXf(const trimesh::fxform& xf);
