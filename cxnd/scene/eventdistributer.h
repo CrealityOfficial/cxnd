@@ -36,7 +36,7 @@ namespace cxnd
 		void keyPressEvent(int key, double time);
 		void keyReleaseEvent(int key, double time);
 
-		void addResizeEventHandler(ResizeEventHandler* handler);
+		void addResizeEventHandler(ResizeEventHandler* handler, bool front = true);
 		void removeResizeEventHandler(ResizeEventHandler* handler);
 		void closeResizeEventHandlers();
 

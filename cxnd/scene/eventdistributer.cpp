@@ -217,9 +217,16 @@ namespace cxnd
 		}
 	}
 
-	void EventDistributer::addResizeEventHandler(ResizeEventHandler* handler)
+	void EventDistributer::addResizeEventHandler(ResizeEventHandler* handler, bool front)
 	{
-		LIST_ADD(m_resizeEventHandlers, handler);
+		if (front)
+		{
+			LIST_ADD(m_resizeEventHandlers, handler);
+		}
+		else
+		{
+			LIST_ADD_BACK(m_resizeEventHandlers, handler);
+		}
 	}
 
 	void EventDistributer::removeResizeEventHandler(ResizeEventHandler* handler)
