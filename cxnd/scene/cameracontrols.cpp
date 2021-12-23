@@ -207,4 +207,38 @@ namespace cxnd
 		setCameraNearFar(nearpos, farpos);
 		notifyProjectionMatrix();
 	}
+
+	void CameraControls::translateCamera(const trimesh::vec3& delta)
+	{
+		trimesh::vec3 viewCenter = m_camera->viewCenter;
+		trimesh::vec3 position = m_camera->position;
+
+		trimesh::vec3 newPosition = position + delta;
+		trimesh::vec3 newViewCenter = viewCenter + delta;
+		trimesh::vec3 newUpVector = m_camera->upVector;
+
+		setCameraPose(newPosition, newViewCenter, newUpVector);
+	}
+
+	void CameraControls::screenTranslateCamera(float x, float y)
+	{
+		trimesh::vec2 t;
+		t.x = x / (float)m_width;
+		t.y = y / (float)m_height;
+
+		trimesh::vec3 cameraPosition = m_camera->position;
+		trimesh::vec3 viewCenter = m_camera->viewCenter;
+		trimesh::vec3 dir = viewCenter - cameraPosition;
+		float D = trimesh::len(dir);
+		trimesh::normalize(dir);
+		trimesh::vec3 left = dir TRICROSS m_camera->upVector;
+
+		D *= tan(M_PI_180f * m_camera->fovy / 2.0f) * 2.0f;
+		float pixelY = D * t.y;
+		float pixelX = D * m_camera->aspectRatio * t.x;
+
+		trimesh::vec3 delta = pixelY * m_camera->upVector - pixelX * left;
+
+		translateCamera(delta);
+	}
 }

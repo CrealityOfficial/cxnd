@@ -217,6 +217,58 @@ namespace cxnd
 		}
 	}
 
+	void EventDistributer::touchTranslate(float deltaX, float deltaY)
+	{
+		TouchSnap snap(deltaX, deltaY, 0.0);
+		for (TouchEventHandler* handler : m_touchEventHandlers)
+		{
+			handler->onTouchTranslate(snap);
+			if (snap.processed())
+				break;
+		}
+	}
+
+	void EventDistributer::touchScale(float scale)
+	{
+		TouchSnap snap(scale, 0.0f, 0.0);
+		for (TouchEventHandler* handler : m_touchEventHandlers)
+		{
+			handler->onTouchScale(snap);
+			if (snap.processed())
+				break;
+		}
+	}
+
+	void EventDistributer::oneTouchBegin(float x, float y)
+	{
+		TouchSnap snap(x, y, 0.0);
+		for (TouchEventHandler* handler : m_touchEventHandlers)
+		{
+			handler->onOneTouchBegin(snap);
+			if (snap.processed())
+				break;
+		}
+	}
+
+	void EventDistributer::oneTouchMove(float x, float y)
+	{
+		TouchSnap snap(x, y, 0.0);
+		for (TouchEventHandler* handler : m_touchEventHandlers)
+		{
+			handler->onOneTouchMove(snap);
+			if (snap.processed())
+				break;
+		}
+	}
+
+	void EventDistributer::oneTouchEnd()
+	{
+		for (TouchEventHandler* handler : m_touchEventHandlers)
+		{
+			handler->onOneTouchEnd();
+		}
+	}
+
 	void EventDistributer::addResizeEventHandler(ResizeEventHandler* handler, bool front)
 	{
 		if (front)
@@ -329,6 +381,21 @@ namespace cxnd
 		m_KeyEventHandlers.clear();
 	}
 
+	void EventDistributer::addTouchEventHandler(TouchEventHandler* handler)
+	{
+		LIST_ADD(m_touchEventHandlers, handler);
+	}
+
+	void EventDistributer::removeTouchEventHandler(TouchEventHandler* handler)
+	{
+		LIST_REMOVE(m_touchEventHandlers, handler);
+	}
+
+	void EventDistributer::closeTouchEventHandlers()
+	{
+		m_touchEventHandlers.clear();
+	}
+
 	void EventDistributer::closeHandlers()
 	{
 		closeLeftMouseEventHandlers();
@@ -337,5 +404,6 @@ namespace cxnd
 		closeHoverEventHandlers();
 		closeResizeEventHandlers();
 		closeKeyEventHandlers();
+		closeTouchEventHandlers();
 	}
 }

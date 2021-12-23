@@ -73,6 +73,32 @@ namespace cxnd
 		float delta;  //
 	};
 
+	class TouchSnap : public SnapBase
+	{
+	public:
+		TouchSnap()
+			:SnapBase(0.0)
+			, touch1(0.0f)
+			, touch2(0.0f)
+		{
+		}
+
+		TouchSnap(float x1, float x2, double time)
+			:SnapBase(time)
+			, touch1(x1)
+			, touch2(x2)
+		{
+		}
+
+		bool operator == (const TouchSnap& snap) const
+		{
+			return touch1 == snap.touch1 && touch2 == snap.touch1;
+		}
+
+		float touch1;  //
+		float touch2;  //
+	};
+
 	class ResizeEventHandler
 	{
 	public:
@@ -136,6 +162,18 @@ namespace cxnd
 		virtual ~KeyEventHandler() {}
 		virtual void onKeyPress(KeySnap& key) = 0;
 		virtual void onKeyRelease(KeySnap& key) = 0;
+	};
+
+	class TouchEventHandler
+	{
+	public:
+		virtual ~TouchEventHandler() {}
+
+		virtual void onTouchTranslate(TouchSnap& snap) = 0;
+		virtual void onTouchScale(TouchSnap& snap) = 0;
+		virtual void onOneTouchBegin(TouchSnap& snap) = 0;
+		virtual void onOneTouchMove(TouchSnap& snap) = 0;
+		virtual void onOneTouchEnd() = 0;
 	};
 }
 

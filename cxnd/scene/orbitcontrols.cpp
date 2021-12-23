@@ -118,6 +118,44 @@ namespace cxnd
 		m_operationMode = 0;
 	}
 
+	void OrbitControls::onTouchTranslate(TouchSnap& snap)
+	{
+		if (translateEnabled())
+			screenTranslateCamera(snap.touch1, snap.touch2);
+	}
+
+	void OrbitControls::onTouchScale(TouchSnap& snap)
+	{
+		float fScaleFactor = snap.touch1;
+		scaleCamera(fScaleFactor);
+	}
+
+	void OrbitControls::onOneTouchBegin(TouchSnap& snap)
+	{
+		if (m_operationMode == 0)
+		{
+			m_operationMode = 3;
+			m_lastTouch = snap;
+		}
+	}
+
+	void OrbitControls::onOneTouchMove(TouchSnap& snap)
+	{
+		if (m_operationMode == 3 && rotateEnabled() && !(snap == m_lastTouch))
+		{
+			MouseSnap m1(m_lastTouch.touch1, m_lastTouch.touch2, 0.0);
+			MouseSnap m2(snap.touch1, snap.touch2, 0.0);
+			performRotate(m1, m2);
+			m_lastTouch = snap;
+		}
+	}
+
+	void OrbitControls::onOneTouchEnd()
+	{
+		if (m_operationMode == 3)
+			m_operationMode = 0;
+	}
+
 	void OrbitControls::performTranslate(MouseSnap& snap1, MouseSnap& snap2)
 	{
 		trimesh::vec3 viewCenter = m_camera->viewCenter;

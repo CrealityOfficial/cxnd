@@ -26,6 +26,7 @@ namespace cxnd
 		, public MidMouseEventHandler
 		, public RightMouseEventHandler
 		, public HoverEventHandler
+		, public TouchEventHandler
 	{
 	public:
 		CameraControls();
@@ -52,6 +53,9 @@ namespace cxnd
 		void setCameraPose(const trimesh::vec3& position, const trimesh::vec3& viewCenter,
 			const trimesh::vec3& upVector);
 		void scaleCamera(float factor);
+
+		void translateCamera(const trimesh::vec3& trans);
+		void screenTranslateCamera(float x, float y);
 	protected:
 		bool m_rotateEnabled;
 		bool m_scaleEnabled;

@@ -25,11 +25,17 @@ namespace cxnd
 		void onRightMouseButtonMove(MouseSnap& mouse) override;
 		void onRightMouseButtonClick(MouseSnap& mouse) override;
 		void onHoverMove(MouseSnap& mouse) override;
+		void onTouchTranslate(TouchSnap& snap) override;
+		void onTouchScale(TouchSnap& snap) override;
+		void onOneTouchBegin(TouchSnap& snap) override;
+		void onOneTouchMove(TouchSnap& snap) override;
+		void onOneTouchEnd() override;
 
 		void performTranslate(MouseSnap& snap1, MouseSnap& snap2);
 		void performRotate(MouseSnap& snap1, MouseSnap& snap2);
 	protected:
 		MouseSnap m_lastSnap;
+		TouchSnap m_lastTouch;
 		int m_operationMode;
 	};
 }

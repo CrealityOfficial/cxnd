@@ -14,7 +14,7 @@ namespace cxnd
 	class LeftMouseEventHandler;
 	class ResizeEventHandler;
 	class KeyEventHandler;
-
+	class TouchEventHandler;
 	class CXND_API EventDistributer
 	{
 	public:
@@ -35,6 +35,12 @@ namespace cxnd
 		void hoverMoveEvent(float x, float y, double time);
 		void keyPressEvent(int key, double time);
 		void keyReleaseEvent(int key, double time);
+
+		void touchTranslate(float deltaX, float deltaY);
+		void touchScale(float scale);
+		void oneTouchBegin(float x, float y);
+		void oneTouchMove(float x, float y);
+		void oneTouchEnd();
 
 		void addResizeEventHandler(ResizeEventHandler* handler, bool front = true);
 		void removeResizeEventHandler(ResizeEventHandler* handler);
@@ -64,6 +70,10 @@ namespace cxnd
 		void removeKeyEventHandler(KeyEventHandler* handler);
 		void closeKeyEventHandlers();
 
+		void addTouchEventHandler(TouchEventHandler* handler);
+		void removeTouchEventHandler(TouchEventHandler* handler);
+		void closeTouchEventHandlers();
+
 		void closeHandlers();
 	protected:
 		std::unique_ptr<ClickEventChecker> m_clickEventChecker;
@@ -75,7 +85,8 @@ namespace cxnd
 		std::list<MidMouseEventHandler*> m_midMouseEventHandlers;
 		std::list<LeftMouseEventHandler*> m_leftMouseEventHandlers;
 		std::list<KeyEventHandler*> m_KeyEventHandlers;
-		
+		std::list<TouchEventHandler*> m_touchEventHandlers;
+
 		int m_width;
 		int m_height;
 	};
