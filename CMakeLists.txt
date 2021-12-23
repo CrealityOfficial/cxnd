@@ -36,6 +36,8 @@ set(SRCS cxnd/interface.h
 		 cxnd/scene/clickeventchecker.cpp
 		 cxnd/scene/eventdistributer.h
 		 cxnd/scene/eventdistributer.cpp
+		 cxnd/scene/idbase.h
+		 cxnd/scene/idbase.cpp
 		 )
 		
 set(INCS)
