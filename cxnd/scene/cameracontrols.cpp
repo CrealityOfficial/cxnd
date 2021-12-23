@@ -170,6 +170,7 @@ namespace cxnd
 		float len2 = f(size.x, size.y, 2.0f * atanf(m_camera->aspectRatio * tanf(fovy / 2.0f)));
 		float len = len1 > len2 ? len1 : len2;
 
+		LOGI("CameraControls fittingBox %f %f %f", m_camera->aspectRatio, len1, len2);
 		trimesh::vec3 up = trimesh::vec3(0.0f, 0.0f, 1.0f);
 		trimesh::vec3 dir = trimesh::vec3(0.0f, -1.0f, 0.0f);
 		if (!resetDir)
