@@ -196,9 +196,6 @@ namespace cxnd
 
 	void Selector::select(float x, float y)
 	{
-		if (selectNotifying)
-			return;
-
 		Pickable* pickable = check(x, y, nullptr);
 
 		if (pickable && !pickable->enableSelect())
@@ -218,8 +215,6 @@ namespace cxnd
 
 	void Selector::select(Pickable* pickable)
 	{
-		if (selectNotifying)
-			return;
 		std::list<Pickable*> offList = selectionmPickables();
 		std::list<Pickable*> onList;
 		if (m_disableReverseSelect && !pickable)
@@ -231,9 +226,6 @@ namespace cxnd
 
 	void Selector::appendSelect(Pickable* pickable)
 	{
-		if (selectNotifying)
-			return;
-
 		if (pickable && !pickable->selected())
 		{
 			pickable->setState(ControlState::selected);
@@ -243,9 +235,6 @@ namespace cxnd
 
 	void Selector::selectAll()
 	{
-		if (selectNotifying)
-			return;
-
 		std::list<Pickable*> onLists;
 		std::list<Pickable*> offlist;
 		for (Pickable* pickable : m_pickables)
@@ -261,9 +250,6 @@ namespace cxnd
 
 	void Selector::select(std::list<Pickable*>& onList, std::list<Pickable*>& offList)
 	{
-		if (selectNotifying)
-			return;
-
 		if ((onList.size() == 0) && (offList.size() == 0))
 			return;
 
@@ -278,6 +264,9 @@ namespace cxnd
 
 	void Selector::notifyTracers()
 	{
+		if (selectNotifying)
+			return;
+
 		selectNotifying = true;
 
 		for (SelectorTracer* tracer : m_selectorTracers)
