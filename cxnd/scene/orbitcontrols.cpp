@@ -126,22 +126,22 @@ namespace cxnd
 
 	void OrbitControls::onTouchScale(TouchSnap& snap)
 	{
-		float fScaleFactor = snap.touch1;
-		scaleCamera(fScaleFactor);
+		if(scaleEnabled())
+		{
+			LOGI("OrbitControls scale %f", snap.touch1);
+			float fScaleFactor = snap.touch1;
+			scaleCamera(fScaleFactor);
+		}
 	}
 
 	void OrbitControls::onOneTouchBegin(TouchSnap& snap)
 	{
-		if (m_operationMode == 0)
-		{
-			m_operationMode = 3;
-			m_lastTouch = snap;
-		}
+		m_lastTouch = snap;
 	}
 
 	void OrbitControls::onOneTouchMove(TouchSnap& snap)
 	{
-		if (m_operationMode == 3 && rotateEnabled() && !(snap == m_lastTouch))
+		if (rotateEnabled() && !(snap == m_lastTouch))
 		{
 			MouseSnap m1(m_lastTouch.touch1, m_lastTouch.touch2, 0.0);
 			MouseSnap m2(snap.touch1, snap.touch2, 0.0);
@@ -152,8 +152,6 @@ namespace cxnd
 
 	void OrbitControls::onOneTouchEnd()
 	{
-		if (m_operationMode == 3)
-			m_operationMode = 0;
 	}
 
 	void OrbitControls::performTranslate(MouseSnap& snap1, MouseSnap& snap2)
