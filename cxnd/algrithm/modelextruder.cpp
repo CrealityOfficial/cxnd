@@ -149,7 +149,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 
 	trimesh::TriMesh* extrusionMesh = new trimesh::TriMesh;
 
-	// topo data test
+	// 柱体拓扑信息
 	if (topoData)
 	{
 		*topoData = new ExtrudedMeshTopoData(extrusionMesh, m_origin);
@@ -175,31 +175,18 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	int roofUpperOriginIndex = extrusionMesh->vertices.size();
 	extrusionMesh->vertices.push_back(trimesh::vec3(m_origin + (bottomThickness + height + bottomThickness) * zDir));
 
-	// 构建底部
-	std::vector<int> bottomUpperPosIndices;
-	for (i = 0; i < mouldPosNum; i++)
-	{
-		trimesh::dvec3 bottomPos = trimesh::dvec3(extrusionMesh->vertices[bottomPosIndices[i]]);
-		trimesh::dvec3 upperPos = bottomPos +  bottomThickness * zDir;
-		bottomUpperPosIndices.push_back(extrusionMesh->vertices.size());
-		extrusionMesh->vertices.push_back(trimesh::vec3(upperPos));
-	}
-
-	generateFaces(bottomOriginIndex, bottomPosIndices, extrusionMesh);
-	generateFaces(bottomPosIndices, bottomUpperPosIndices, extrusionMesh, true, true);
-	generateFaces(bottomUpperOriginIndex, bottomUpperPosIndices, extrusionMesh, true);
-
 	// 构建壁
-	trimesh::dvec3 bottomUpperOrigin = m_origin + bottomThickness * zDir;
+	trimesh::dvec3 bottomUpperOrigin = m_origin/* + bottomThickness * zDir*/;
+	std::vector<int> outerWallBottomPosIndices = bottomPosIndices;
 	std::vector<int> innerWallBottomPosIndices;
 	// 生成无圆角内壁底部顶点
 	if (!m_roundAngleFlag)
 	{
 		for (i = 0; i < mouldPosNum; i++)
 		{
-			trimesh::dvec3 outerPos = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i]]);
-			trimesh::dvec3 outerPosNeig1 = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i - 1 < 0 ? mouldPosNum - 1 : i - 1]]);
-			trimesh::dvec3 outerPosNeig2 = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i + 1 >= mouldPosNum ? 0 : i + 1]]);
+			trimesh::dvec3 outerPos = trimesh::dvec3(extrusionMesh->vertices[outerWallBottomPosIndices[i]]);
+			trimesh::dvec3 outerPosNeig1 = trimesh::dvec3(extrusionMesh->vertices[outerWallBottomPosIndices[i - 1 < 0 ? mouldPosNum - 1 : i - 1]]);
+			trimesh::dvec3 outerPosNeig2 = trimesh::dvec3(extrusionMesh->vertices[outerWallBottomPosIndices[i + 1 >= mouldPosNum ? 0 : i + 1]]);
 			trimesh::dvec3 innerPos = outerPos + wallThickness * trimesh::normalized(trimesh::normalized(outerPosNeig1 - outerPos) + trimesh::normalized(outerPosNeig2 - outerPos));
 			innerWallBottomPosIndices.push_back(extrusionMesh->vertices.size());
 			extrusionMesh->vertices.push_back(trimesh::vec3(innerPos));
@@ -215,7 +202,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 			trimesh::dvec3 outerPosNeig1 = m_2DMouldCtrlVertices[i - 1 < 0 ? m_2DMouldCtrlVertices.size() - 1 : i - 1];
 			trimesh::dvec3 outerPosNeig2 = m_2DMouldCtrlVertices[i + 1 >= m_2DMouldCtrlVertices.size() ? 0 : i + 1];
 			trimesh::dvec3 innerPos = outerPos + wallThickness * trimesh::normalized(trimesh::normalized(outerPosNeig1 - outerPos) + trimesh::normalized(outerPosNeig2 - outerPos));
-			innerPos = innerPos + bottomThickness * zDir;
+			//innerPos = innerPos + bottomThickness * zDir;
 			innerWallBottomCtrlPosArray.push_back(innerPos);
 		}
 
@@ -245,7 +232,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	std::vector<int> innerWallUpperPosIndices;
 	for (i = 0; i < mouldPosNum; i++)
 	{
-		trimesh::dvec3 outerPos = trimesh::dvec3(extrusionMesh->vertices[bottomUpperPosIndices[i]]);
+		trimesh::dvec3 outerPos = trimesh::dvec3(extrusionMesh->vertices[outerWallBottomPosIndices[i]]);
 		trimesh::dvec3 innerPos = trimesh::dvec3(extrusionMesh->vertices[innerWallBottomPosIndices[i]]);
 
 		trimesh::dvec3 outerWallUpperPos = outerPos + height * zDir;
@@ -260,16 +247,31 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 
 	// topo data test
 	std::vector<int> outerWallFaceIndices;
-	//generateFaces(bottomUpperPosIndices, innerWallBottomPosIndices, extrusionMesh, true);
-	generateFaces(bottomUpperPosIndices, outerWallUpperPosIndices, extrusionMesh, true, true, &outerWallFaceIndices);
+	generateFaces(outerWallBottomPosIndices, innerWallBottomPosIndices, extrusionMesh, true);
+	generateFaces(outerWallBottomPosIndices, outerWallUpperPosIndices, extrusionMesh, true, true, &outerWallFaceIndices);
 	generateFaces(innerWallBottomPosIndices, innerWallUpperPosIndices, extrusionMesh, true);
 	generateFaces(outerWallUpperPosIndices, innerWallUpperPosIndices, extrusionMesh, true, true);
 
 	// topo data test
 	if (topoData)
 	{
-		(*topoData)->setWallOuterData(bottomUpperPosIndices, outerWallUpperPosIndices, outerWallFaceIndices);
+		(*topoData)->setWallOuterData(outerWallBottomPosIndices, outerWallUpperPosIndices, outerWallFaceIndices);
 	}
+
+	// 构建底部
+	std::vector<int> bottomLowerPosIndices = innerWallBottomPosIndices;
+	std::vector<int> bottomUpperPosIndices;
+	for (i = 0; i < mouldPosNum; i++)
+	{
+		trimesh::dvec3 bottomPos = trimesh::dvec3(extrusionMesh->vertices[bottomLowerPosIndices[i]]);
+		trimesh::dvec3 upperPos = bottomPos + bottomThickness * zDir;
+		bottomUpperPosIndices.push_back(extrusionMesh->vertices.size());
+		extrusionMesh->vertices.push_back(trimesh::vec3(upperPos));
+	}
+
+	generateFaces(bottomOriginIndex, bottomLowerPosIndices, extrusionMesh);
+	generateFaces(bottomLowerPosIndices, bottomUpperPosIndices, extrusionMesh, true, true);
+	generateFaces(bottomUpperOriginIndex, bottomUpperPosIndices, extrusionMesh, true);
 
 	// 封顶
 	if (roofFlag)
