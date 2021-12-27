@@ -242,4 +242,21 @@ namespace cxnd
 	{
 		return trimesh::box3();
 	}
+
+	void SNode::placeNormalOnPlane(const trimesh::vec3& normal)
+	{
+		trimesh::vec3 z = trimesh::vec3(0.0f, 0.0f, -1.0f);
+
+		trimesh::box3 oldBox = calculateBox();
+		trimesh::vec3 oldCenter = oldBox.center();
+		applyRotate(normal, z, false);
+
+		trimesh::box3 box = calculateBox();
+		trimesh::vec3 localPos = localPosition();
+		trimesh::vec3 offset = oldCenter - box.center();
+		trimesh::vec3 zoffset = trimesh::vec3(offset.x, offset.y, -box.min.z);
+		trimesh::vec3 newPosition = localPos + zoffset;
+
+		setLocalPosition(newPosition);
+	}
 }
