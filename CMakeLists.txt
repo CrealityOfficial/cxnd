@@ -63,3 +63,7 @@ else()
 								  )
 endif()
 
+if(CC_INSTALL_CXND)
+	__install_directory_specif(${CMAKE_CURRENT_SOURCE_DIR}/ cxnd)
+endif()
+
