@@ -156,33 +156,37 @@ namespace cxnd
 		if (!m_camera)
 			return;
 
-		trimesh::vec3 center = box.center();
-		trimesh::vec3 size = box.size();
-
-		float fovy = m_camera->fovy * M_PIf / 180.0f;
-
-		auto f = [](float z, float x, float fovy)->float {
-			float r = sqrtf(x * x + z * z) / 2.0f;
-			return r / sinf(fovy / 2.0f);
-		};
-
-		float len1 = f(size.z, size.y, fovy);
-		float len2 = f(size.x, size.y, 2.0f * atanf(m_camera->aspectRatio * tanf(fovy / 2.0f)));
-		float len = len1 > len2 ? len1 : len2;
-
-		LOGI("CameraControls fittingBox %f %f %f", m_camera->aspectRatio, len1, len2);
-		trimesh::vec3 up = trimesh::vec3(0.0f, 0.0f, 1.0f);
-		trimesh::vec3 dir = trimesh::vec3(0.0f, -1.0f, 0.0f);
-		if (!resetDir)
-		{
-			up = m_camera->upVector;
-			dir = - m_camera->direction();
-		}
-		trimesh::vec3 eye = center + dir * len;
-
-		setCameraPose(eye, center, up);
-		updateNearFar(box);
+		m_camera->fittingBox(box, resetDir);
 		notifyViewMatrix();
+		notifyProjectionMatrix();
+
+		//trimesh::vec3 center = box.center();
+		//trimesh::vec3 size = box.size();
+		//
+		//float fovy = m_camera->fovy * M_PIf / 180.0f;
+		//
+		//auto f = [](float z, float x, float fovy)->float {
+		//	float r = sqrtf(x * x + z * z) / 2.0f;
+		//	return r / sinf(fovy / 2.0f);
+		//};
+		//
+		//float len1 = f(size.z, size.y, fovy);
+		//float len2 = f(size.x, size.y, 2.0f * atanf(m_camera->aspectRatio * tanf(fovy / 2.0f)));
+		//float len = len1 > len2 ? len1 : len2;
+		//
+		//LOGI("CameraControls fittingBox %f %f %f", m_camera->aspectRatio, len1, len2);
+		//trimesh::vec3 up = trimesh::vec3(0.0f, 0.0f, 1.0f);
+		//trimesh::vec3 dir = trimesh::vec3(0.0f, -1.0f, 0.0f);
+		//if (!resetDir)
+		//{
+		//	up = m_camera->upVector;
+		//	dir = - m_camera->direction();
+		//}
+		//trimesh::vec3 eye = center + dir * len;
+		//
+		//setCameraPose(eye, center, up);
+		//updateNearFar(box);
+		//notifyViewMatrix();
 	}
 
 	void CameraControls::updateNearFar(const trimesh::box3& box)

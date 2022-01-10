@@ -3,6 +3,7 @@
 #include "cxnd/interface.h"
 #include "trimesh2/Vec.h"
 #include "trimesh2/XForm.h"
+#include "trimesh2/Box.h"
 #include "cxnd/struct/ray.h"
 
 namespace cxnd
@@ -27,6 +28,9 @@ namespace cxnd
 		trimesh::vec3 direction();
 		float verticalAngle();
 		Ray screenRay(const trimesh::vec2& pixel);
+		void fittingBox(const trimesh::box3& box, bool resetDir = true);
+		void updateNearFar(const trimesh::box3& box);
+		void setSize(int width, int height);
 
 		CameraProjectionType type;
 

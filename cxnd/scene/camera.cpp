@@ -97,4 +97,63 @@ namespace cxnd
 	{
 		return cxnd::screenRay(*this, pixel, trimesh::vec2(width, height));
 	}
+
+	void Camera::fittingBox(const trimesh::box3& box, bool resetDir)
+	{
+		trimesh::vec3 center = box.center();
+		trimesh::vec3 size = box.size();
+
+		float _fovy = this->fovy * M_PIf / 180.0f;
+
+		auto f = [](float z, float x, float fovy)->float {
+			float r = sqrtf(x * x + z * z) / 2.0f;
+			return r / sinf(fovy / 2.0f);
+		};
+
+		float len1 = f(size.z, size.y, _fovy);
+		float len2 = f(size.x, size.y, 2.0f * atanf(this->aspectRatio * tanf(_fovy / 2.0f)));
+		float len = len1 > len2 ? len1 : len2;
+
+		trimesh::vec3 up = trimesh::vec3(0.0f, 0.0f, 1.0f);
+		trimesh::vec3 dir = trimesh::vec3(0.0f, -1.0f, 0.0f);
+		if (!resetDir)
+		{
+			up = this->upVector;
+			dir = -this->direction();
+		}
+		trimesh::vec3 eye = center + dir * len;
+
+		this->position = eye;
+		this->viewCenter = center;
+		this->upVector = up;
+
+		updateNearFar(box);
+	}
+
+	void Camera::updateNearFar(const trimesh::box3& box)
+	{
+		trimesh::vec3 cameraPosition = this->position;
+		trimesh::vec3 cameraCenter = this->viewCenter;
+		trimesh::vec3 cameraView = cameraCenter - cameraPosition;
+		trimesh::normalize(cameraView);
+
+		trimesh::vec3 center = box.center();
+		float r = trimesh::len(box.size()) / 2.0f;
+		float d = cameraView DOT(center - cameraPosition);
+		float dmin = d - 1.2f * r;
+		float dmax = d + 1.2f * r;
+
+		float nearpos = dmin < 1.0f ? (2.0f * r > 1.0f ? 0.1f : dmin) : dmin;
+		float farpos = dmax > 0.0f ? dmax : 3000.0f;
+
+		this->fNear = nearpos;
+		this->fFar = farpos;
+	}
+
+	void Camera::setSize(int w, int h)
+	{
+		this->width = (float)w;
+		this->height = (float)h;
+		this->aspectRatio = this->width / this->height;
+	}
 }
