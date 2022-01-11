@@ -1,7 +1,6 @@
 #include "modelextruder.h"
 
-#include "trimesh2/XFORM.H"
-
+#include "trimesh2/XForm.h"
 using namespace cxnd;
 
 
@@ -28,7 +27,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double edgeLength,
 	m_2DMouldVertices.clear();
 	m_roundAngleRadiusRatePerCtrlVertex.clear();
 
-	// µ×ÃæÄ£°åÉú³É
+	// ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	double deltaRadians = 2 * M_PI / edgeCount;
 	double radius = edgeLength / 2.0 / sin(deltaRadians / 2.0);
 	trimesh::dvec3 offsetVector(0.0, 1.0, 0.0);
@@ -41,12 +40,12 @@ bool ModelExtruder::build2DMould(int edgeCount, double edgeLength,
 		offsetVector = rotMt * offsetVector;
 	}
 
-	// Ô²½Ç´¦Àí£ºÒÔÉÏÒ»²½Éú³ÉµÄÄ£°å¶¥µã£¬¼°ÆäÏò×óÓÒÏàÁÚ¶¥µã·½ÏòÑÓÉìÔ²½Ç°ë¾¶³¤¶ÈËùµÃµÄµãÎª¿ØÖÆµã£¬½øÐÐ±´Èû¶û²åÖµ£¬µÃµ½Ô²½Ç¶¥µã
+	// Ô²ï¿½Ç´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Éµï¿½Ä£ï¿½å¶¥ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ã·½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½Ç°ë¾¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄµï¿½Îªï¿½ï¿½ï¿½Æµã£¬ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ãµï¿½Ô²ï¿½Ç¶ï¿½ï¿½ï¿½
 	if (m_roundAngleFlag)
 	{
-		// Ô²½Ç°ë¾¶×î´óÖ»ÄÜÎª±ß³¤µÄÒ»°ë
+		// Ô²ï¿½Ç°ë¾¶ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Îªï¿½ß³ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 		roundAngleRadius = std::min(roundAngleRadius, edgeLength / 2.0);
-		// Ô²½Ç°ë¾¶Óë±ß³¤µÄ±ÈÀý£¬ÓÃÓÚÄÚ±ÚµÄÔ²½Ç´¦Àí
+		// Ô²ï¿½Ç°ë¾¶ï¿½ï¿½ß³ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±Úµï¿½Ô²ï¿½Ç´ï¿½ï¿½ï¿½
 		double rarRate = roundAngleRadius / edgeLength;
 		double t = 0.0;
 		double deltaT = 1.0 / m_roundAngleSampleCount;
@@ -86,7 +85,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 	m_2DMouldVertices.clear();
 	m_roundAngleRadiusRatePerCtrlVertex.clear();
 
-	// µ×ÃæÄ£°åÉú³É
+	// ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	double deltaRadians = 2 * M_PI / edgeCount;
 	double radius = std::min(length, width) / 2;
 	double extendOffset = std::max(length, width) / 2 - radius;
@@ -104,7 +103,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 		offsetVector = rotMt * offsetVector;
 	}
 
-	// Ô²½Ç´¦Àí£ºÒÔÉÏÒ»²½Éú³ÉµÄÄ£°å¶¥µã£¬¼°ÆäÏò×óÓÒÏàÁÚ¶¥µã·½ÏòÑÓÉìÔ²½Ç°ë¾¶³¤¶ÈËùµÃµÄµãÎª¿ØÖÆµã£¬½øÐÐ±´Èû¶û²åÖµ£¬µÃµ½Ô²½Ç¶¥µã
+	// Ô²ï¿½Ç´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Éµï¿½Ä£ï¿½å¶¥ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ã·½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½Ç°ë¾¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄµï¿½Îªï¿½ï¿½ï¿½Æµã£¬ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ãµï¿½Ô²ï¿½Ç¶ï¿½ï¿½ï¿½
 	if (m_roundAngleFlag)
 	{
 		double t = 0.0;
@@ -119,7 +118,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 
 			double curpreDis = trimesh::distance(curVertex, preVertex);
 			double curpostDis = trimesh::distance(curVertex, postVertex);
-			// Ô²½Ç°ë¾¶×î´óÖ»ÄÜÎª±ß³¤µÄÒ»°ë
+			// Ô²ï¿½Ç°ë¾¶ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Îªï¿½ß³ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 			double curpreRaius = std::min(roundAngleRadius, curpreDis / 2.0);
 			double curpostRaius = std::min(roundAngleRadius, curpostDis / 2.0);
 			trimesh::dvec3 preControl = curVertex + curpreRaius * trimesh::normalized(preVertex - curVertex);
@@ -132,7 +131,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 				m_2DMouldVertices.push_back(vertex);
 			}
 
-			// Ô²½Ç°ë¾¶Óë±ß³¤µÄ±ÈÀý£¬ÓÃÓÚÄÚ±ÚµÄÔ²½Ç´¦Àí
+			// Ô²ï¿½Ç°ë¾¶ï¿½ï¿½ß³ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±Úµï¿½Ô²ï¿½Ç´ï¿½ï¿½ï¿½
 			double curpreRARRate = curpreRaius / curpreDis;
 			double curpostRARRate = curpreRaius / curpostDis;
 			m_roundAngleRadiusRatePerCtrlVertex.push_back({ curpreRARRate, curpostRARRate });
@@ -149,7 +148,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 
 	trimesh::TriMesh* extrusionMesh = new trimesh::TriMesh;
 
-	// ÖùÌåÍØÆËÐÅÏ¢
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 	if (topoData)
 	{
 		*topoData = new ExtrudedMeshTopoData(extrusionMesh, m_origin);
@@ -175,11 +174,11 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	int roofUpperOriginIndex = extrusionMesh->vertices.size();
 	extrusionMesh->vertices.push_back(trimesh::vec3(m_origin + (bottomThickness + height + bottomThickness) * zDir));
 
-	// ¹¹½¨±Ú
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	trimesh::dvec3 bottomUpperOrigin = m_origin/* + bottomThickness * zDir*/;
 	std::vector<int> outerWallBottomPosIndices = bottomPosIndices;
 	std::vector<int> innerWallBottomPosIndices;
-	// Éú³ÉÎÞÔ²½ÇÄÚ±Úµ×²¿¶¥µã
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½Ú±Úµ×²ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (!m_roundAngleFlag)
 	{
 		for (i = 0; i < mouldPosNum; i++)
@@ -192,7 +191,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 			extrusionMesh->vertices.push_back(trimesh::vec3(innerPos));
 		}
 	}
-	// Éú³ÉÔ²½ÇÄÚ±Úµ×²¿¶¥µã
+	// ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½Ú±Úµ×²ï¿½ï¿½ï¿½ï¿½ï¿½
 	else
 	{
 		std::vector<trimesh::dvec3> innerWallBottomCtrlPosArray;
@@ -258,7 +257,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 		(*topoData)->setWallOuterData(outerWallBottomPosIndices, outerWallUpperPosIndices, outerWallFaceIndices);
 	}
 
-	// ¹¹½¨µ×²¿
+	// ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½
 	std::vector<int> bottomLowerPosIndices = innerWallBottomPosIndices;
 	std::vector<int> bottomUpperPosIndices;
 	for (i = 0; i < mouldPosNum; i++)
@@ -273,7 +272,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	generateFaces(bottomLowerPosIndices, bottomUpperPosIndices, extrusionMesh, true, true);
 	generateFaces(bottomUpperOriginIndex, bottomUpperPosIndices, extrusionMesh, true);
 
-	// ·â¶¥
+	// ï¿½â¶¥
 	if (roofFlag)
 	{
 		std::vector<int> roofUpperPosIndices;
