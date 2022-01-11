@@ -180,11 +180,17 @@ namespace cxnd
 		cosinus = cosinus > 1.0 ? 1.0 : (cosinus < -1.0 ? -1.0 : cosinus);
 		double angle = acos(cosinus);
 #ifdef WIN32
-		if (!_finite(angle) || angle > M_PI)
-			angle = 0.0;
+        if (!_finite(angle) || angle > M_PI)
+            angle = 0.0;
+#elif __APPLE__
+        if (!isfinite(angle) || angle > M_PI)
+            angle = 0.0;
+#elif defined(__ANDROID__)
+        if (!isfinite(angle) || angle > M_PI)
+            angle = 0.0;
 #else
-		if (!finite(angle) || angle > M_PI)
-			angle = 0.0;
+        if (!finite(angle) || angle > M_PI)
+            angle = 0.0;
 #endif
 		return (float)angle;
 	}
