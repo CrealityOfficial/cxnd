@@ -259,4 +259,21 @@ namespace cxnd
 
 		setLocalPosition(newPosition);
 	}
+
+	void SNode::roateCC(int index, int count)
+	{
+		float theta = 360.0f / (double)count;
+		float rTheta = (float)index * theta;
+		
+		trimesh::box3 box = calculateBox();
+
+		trimesh::vec center = box.center();
+		trimesh::fxform t1 = trimesh::fxform::trans(center);
+		trimesh::fxform r1 = trimesh::fxform::rot(45.0f, trimesh::vec(1.0f, 0.0f, 0.0f));
+		trimesh::fxform r2 = trimesh::fxform::rot(rTheta, trimesh::vec(0.0f, 0.0f, 1.0f));
+		trimesh::fxform t2 = trimesh::fxform::trans(-center);
+
+		trimesh::fxform xf = t1 * r1 * r2 * t2;
+		applyXf(xf);
+	}
 }

@@ -47,6 +47,8 @@ namespace cxnd
 		virtual trimesh::box3 calculateBox();
 
 		void placeNormalOnPlane(const trimesh::vec3& normal);
+		
+		void roateCC(int index, int count);  //test
 	protected:
 		void applyXf(const trimesh::fxform& xf);
 	protected:
