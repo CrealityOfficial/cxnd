@@ -105,13 +105,13 @@ namespace cxnd
 
 		float _fovy = this->fovy * M_PIf / 180.0f;
 
-		auto f = [](float z, float x, float fovy)->float {
-			float r = sqrtf(x * x + z * z) / 2.0f;
+		auto f = [](trimesh::vec3 size, float fovy)->float {
+			float r = trimesh::len(size) / 2.0f;
 			return r / sinf(fovy / 2.0f);
 		};
 
-		float len1 = f(size.z, size.y, _fovy);
-		float len2 = f(size.x, size.y, 2.0f * atanf(this->aspectRatio * tanf(_fovy / 2.0f)));
+		float len1 = f(size, _fovy);
+		float len2 = f(size, 2.0f * atanf(this->aspectRatio * tanf(_fovy / 2.0f)));
 		float len = len1 > len2 ? len1 : len2;
 
 		trimesh::vec3 up = trimesh::vec3(0.0f, 0.0f, 1.0f);
