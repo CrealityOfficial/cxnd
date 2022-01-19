@@ -276,4 +276,17 @@ namespace cxnd
 		trimesh::fxform xf = t1 * r1 * r2 * t2;
 		applyXf(xf);
 	}
+
+	void SNode::applyVisualMatrix(const trimesh::fxform& xf)
+	{
+		updateMatrix();
+
+		trimesh::fxform m = xf * m_globalMatrix;
+		matrixChanged(m);
+	}
+
+	void SNode::updateVisual()
+	{
+		updateMatrix();
+	}
 }

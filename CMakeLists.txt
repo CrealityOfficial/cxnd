@@ -9,7 +9,8 @@ set(SRCS cxnd/interface.h
 		 cxnd/algrithm/a3d.cpp
 		 cxnd/algrithm/modelextruder.h
 		 cxnd/algrithm/modelextruder.cpp
-		 cxnd/algrithm/a3d.cpp
+		 cxnd/algrithm/raymesh.h
+		 cxnd/algrithm/raymesh.cpp
 		 cxnd/struct/triangleaabbnode.h
 		 cxnd/struct/triangleaabbnode.cpp
 		 cxnd/struct/triangleaabbtree.h
