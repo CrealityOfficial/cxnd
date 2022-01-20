@@ -224,6 +224,15 @@ namespace cxnd
 		select(onList, offList);
 	}
 
+	void Selector::unselect(Pickable* pickable)
+	{
+		if (!pickable)
+			return;
+
+		pickable->setState(ControlState::none);
+		notifyTracers();
+	}
+
 	void Selector::appendSelect(Pickable* pickable)
 	{
 		if (pickable && !pickable->selected())

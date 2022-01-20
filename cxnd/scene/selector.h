@@ -37,6 +37,7 @@ namespace cxnd
 		bool hover(float x, float y);
 		void select(float x, float y);
 		void select(Pickable* pickable);
+		void unselect(Pickable* pickable);
 		void appendSelect(Pickable* pickable);
 		void selectGroup(Pickable* pickable);
 		void updateFaceBases();
