@@ -52,7 +52,8 @@ namespace cxnd
 				clearHover();
 			}
 
-			notifyTracers();
+			if(pickable->enableSelect())
+				notifyTracers();
 		}
 	}
 
