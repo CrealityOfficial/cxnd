@@ -17,6 +17,9 @@ namespace cxnd
 
 		void setParent(SNode* node);
 		SNode* parent();
+		bool hasChild(SNode* node) { return std::find(m_children.begin(), m_children.end(), node) == m_children.end(); }
+		int childrenNum() { return m_children.size(); }
+		std::list<SNode*> children() { return m_children; }
 
 		trimesh::vec3 center();
 		void setCenter(const trimesh::vec3& center, bool update = true);
