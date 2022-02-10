@@ -33,6 +33,7 @@ namespace cxnd
 		virtual ~CameraControls();
 
 		void setCamera(Camera* camera);
+        Camera* getCamera();
 		bool rotateEnabled();
 		bool scaleEnabled();
 		bool translateEnabled();
@@ -41,6 +42,8 @@ namespace cxnd
 		void setTranslateEnabled(bool enabled);
 		void fittingBox(const trimesh::box3& box, bool resetDir = true);
 		void updateNearFar(const trimesh::box3& box);
+        void setCameraPose(const trimesh::vec3& position, const trimesh::vec3& viewCenter,
+            const trimesh::vec3& upVector);
 	protected:
 		void notifyViewMatrix();
 		void notifyProjectionMatrix();
@@ -50,8 +53,7 @@ namespace cxnd
 
 		void setCameraScreenSize(float width, float height);
 		void setCameraNearFar(float fNear, float fFar);
-		void setCameraPose(const trimesh::vec3& position, const trimesh::vec3& viewCenter,
-			const trimesh::vec3& upVector);
+        
 		void scaleCamera(float factor);
 
 		void translateCamera(const trimesh::vec3& trans);

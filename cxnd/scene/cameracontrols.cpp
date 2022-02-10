@@ -25,6 +25,11 @@ namespace cxnd
 	{
 		m_camera = camera;
 	}
+    
+    Camera* CameraControls::getCamera()
+    {
+        return m_camera;
+    }
 
 	void CameraControls::onResize(float width, float height)
 	{
