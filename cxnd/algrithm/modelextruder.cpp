@@ -27,7 +27,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double edgeLength,
 	m_2DMouldVertices.clear();
 	m_roundAngleRadiusRatePerCtrlVertex.clear();
 
-	// ����ģ������
+	// 底面模板生成
 	double deltaRadians = 2 * M_PI / edgeCount;
 	double radius = edgeLength / 2.0 / sin(deltaRadians / 2.0);
 	trimesh::dvec3 offsetVector(0.0, 1.0, 0.0);
@@ -36,16 +36,16 @@ bool ModelExtruder::build2DMould(int edgeCount, double edgeLength,
 	{
 		trimesh::dvec3 vertex = m_origin + radius * offsetVector;
 		m_2DMouldVertices.push_back(vertex);
-		
+
 		offsetVector = rotMt * offsetVector;
 	}
 
-	// Բ�Ǵ�������һ�����ɵ�ģ�嶥�㣬�������������ڶ��㷽������Բ�ǰ뾶�������õĵ�Ϊ���Ƶ㣬���б�������ֵ���õ�Բ�Ƕ���
+	// 圆角处理：以上一步生成的模板顶点，及其向左右相邻顶点方向延伸圆角半径长度所得的点为控制点，进行贝塞尔插值，得到圆角顶点
 	if (m_roundAngleFlag)
 	{
-		// Բ�ǰ뾶���ֻ��Ϊ�߳���һ��
+		// 圆角半径最大只能为边长的一半
 		roundAngleRadius = std::min(roundAngleRadius, edgeLength / 2.0);
-		// Բ�ǰ뾶��߳��ı����������ڱڵ�Բ�Ǵ���
+		// 圆角半径与边长的比例，用于内壁的圆角处理
 		double rarRate = roundAngleRadius / edgeLength;
 		double t = 0.0;
 		double deltaT = 1.0 / m_roundAngleSampleCount;
@@ -61,13 +61,13 @@ bool ModelExtruder::build2DMould(int edgeCount, double edgeLength,
 			trimesh::dvec3 postControl = curVertex + roundAngleRadius * trimesh::normalized(postVertex - curVertex);
 
 			t = 0.0;
-			for (; t <= 1.0; t+=deltaT)
+			for (; t <= 1.0; t += deltaT)
 			{
 				trimesh::dvec3 vertex = BezierSample(t, preControl, curVertex, postControl);
 				m_2DMouldVertices.push_back(vertex);
 			}
 
-			m_roundAngleRadiusRatePerCtrlVertex.push_back({rarRate, rarRate});
+			m_roundAngleRadiusRatePerCtrlVertex.push_back({ rarRate, rarRate });
 		}
 	}
 
@@ -85,7 +85,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 	m_2DMouldVertices.clear();
 	m_roundAngleRadiusRatePerCtrlVertex.clear();
 
-	// ����ģ������
+	// 底面模板生成
 	double deltaRadians = 2 * M_PI / edgeCount;
 	double radius = std::min(length, width) / 2;
 	double extendOffset = std::max(length, width) / 2 - radius;
@@ -96,14 +96,14 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 	{
 		double dotValue = offsetVector.dot(extendVector);
 		dotValue = dotValue > 0 ? 1 : dotValue < 0 ? -1 : 0;
-		trimesh::dvec3 tempVector = dotValue *extendVector;
+		trimesh::dvec3 tempVector = dotValue * extendVector;
 		trimesh::dvec3 vertex = m_origin + radius * offsetVector + extendOffset * tempVector;
 		m_2DMouldVertices.push_back(vertex);
 
 		offsetVector = rotMt * offsetVector;
 	}
 
-	// Բ�Ǵ�������һ�����ɵ�ģ�嶥�㣬�������������ڶ��㷽������Բ�ǰ뾶�������õĵ�Ϊ���Ƶ㣬���б�������ֵ���õ�Բ�Ƕ���
+	// 圆角处理：以上一步生成的模板顶点，及其向左右相邻顶点方向延伸圆角半径长度所得的点为控制点，进行贝塞尔插值，得到圆角顶点
 	if (m_roundAngleFlag)
 	{
 		double t = 0.0;
@@ -118,7 +118,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 
 			double curpreDis = trimesh::distance(curVertex, preVertex);
 			double curpostDis = trimesh::distance(curVertex, postVertex);
-			// Բ�ǰ뾶���ֻ��Ϊ�߳���һ��
+			// 圆角半径最大只能为边长的一半
 			double curpreRaius = std::min(roundAngleRadius, curpreDis / 2.0);
 			double curpostRaius = std::min(roundAngleRadius, curpostDis / 2.0);
 			trimesh::dvec3 preControl = curVertex + curpreRaius * trimesh::normalized(preVertex - curVertex);
@@ -131,7 +131,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 				m_2DMouldVertices.push_back(vertex);
 			}
 
-			// Բ�ǰ뾶��߳��ı����������ڱڵ�Բ�Ǵ���
+			// 圆角半径与边长的比例，用于内壁的圆角处理
 			double curpreRARRate = curpreRaius / curpreDis;
 			double curpostRARRate = curpreRaius / curpostDis;
 			m_roundAngleRadiusRatePerCtrlVertex.push_back({ curpreRARRate, curpostRARRate });
@@ -148,7 +148,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 
 	trimesh::TriMesh* extrusionMesh = new trimesh::TriMesh;
 
-	// ����������Ϣ
+	// 柱体拓扑信息
 	if (topoData)
 	{
 		*topoData = new ExtrudedMeshTopoData(extrusionMesh, m_origin);
@@ -174,11 +174,11 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	int roofUpperOriginIndex = extrusionMesh->vertices.size();
 	extrusionMesh->vertices.push_back(trimesh::vec3(m_origin + (bottomThickness + height + bottomThickness) * zDir));
 
-	// ������
+	// 构建壁
 	trimesh::dvec3 bottomUpperOrigin = m_origin/* + bottomThickness * zDir*/;
 	std::vector<int> outerWallBottomPosIndices = bottomPosIndices;
 	std::vector<int> innerWallBottomPosIndices;
-	// ������Բ���ڱڵײ�����
+	// 生成无圆角内壁底部顶点
 	if (!m_roundAngleFlag)
 	{
 		for (i = 0; i < mouldPosNum; i++)
@@ -191,7 +191,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 			extrusionMesh->vertices.push_back(trimesh::vec3(innerPos));
 		}
 	}
-	// ����Բ���ڱڵײ�����
+	// 生成圆角内壁底部顶点
 	else
 	{
 		std::vector<trimesh::dvec3> innerWallBottomCtrlPosArray;
@@ -257,7 +257,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 		(*topoData)->setWallOuterData(outerWallBottomPosIndices, outerWallUpperPosIndices, outerWallFaceIndices);
 	}
 
-	// �����ײ�
+	// 构建底部
 	std::vector<int> bottomLowerPosIndices = innerWallBottomPosIndices;
 	std::vector<int> bottomUpperPosIndices;
 	for (i = 0; i < mouldPosNum; i++)
@@ -272,7 +272,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	generateFaces(bottomLowerPosIndices, bottomUpperPosIndices, extrusionMesh, true, true);
 	generateFaces(bottomUpperOriginIndex, bottomUpperPosIndices, extrusionMesh, true);
 
-	// �ⶥ
+	// 封顶
 	if (roofFlag)
 	{
 		std::vector<int> roofUpperPosIndices;
