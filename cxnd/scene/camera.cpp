@@ -1,10 +1,12 @@
 #include "camera.h"
 #include "cameraspace.h"
 
+const float DEFAULT_FOVY = 30.0;
+
 namespace cxnd
 {
 	Camera::Camera()
-		: fovy(30.0f)
+		: fovy(DEFAULT_FOVY)
 		, fNear(1.0f)
 		, fFar(100.0f)
 		, aspectRatio(1.0f)
@@ -156,4 +158,9 @@ namespace cxnd
 		this->height = (float)h;
 		this->aspectRatio = this->width / this->height;
 	}
+    
+    float Camera::defaultFovy()
+    {
+        return DEFAULT_FOVY;
+    }
 }
