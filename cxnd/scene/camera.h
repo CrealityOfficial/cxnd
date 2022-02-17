@@ -14,6 +14,16 @@ namespace cxnd
 		eOrth
 	};
 
+    enum class CameraViewDirection
+    {
+        front = 0,
+        back = 1,
+        left = 2,
+        right = 3,
+        top = 4,
+        bottom = 5
+    };
+
 	class CXND_API Camera
 	{
 	public:
@@ -28,7 +38,7 @@ namespace cxnd
 		trimesh::vec3 direction();
 		float verticalAngle();
 		Ray screenRay(const trimesh::vec2& pixel);
-		void fittingBox(const trimesh::box3& box, bool resetDir = true);
+		void fittingBox(const trimesh::box3& box, bool resetDir = true, CameraViewDirection vd = CameraViewDirection::front);
 		void updateNearFar(const trimesh::box3& box);
 		void setSize(int width, int height);
         float defaultFovy();

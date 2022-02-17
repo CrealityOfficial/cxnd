@@ -5,6 +5,7 @@
 #include "trimesh2/XForm.h"
 #include "trimesh2/Box.h"
 #include "cxnd/scene/eventhandlers.h"
+#include "cxnd/scene/camera.h"
 
 namespace cxnd
 {
@@ -40,7 +41,7 @@ namespace cxnd
 		void setRotateEnabled(bool enabled);
 		void setScaleEnabled(bool enabled);
 		void setTranslateEnabled(bool enabled);
-		void fittingBox(const trimesh::box3& box, bool resetDir = true);
+		void fittingBox(const trimesh::box3& box, bool resetDir = true, CameraViewDirection vd = CameraViewDirection::front);
 		void updateNearFar(const trimesh::box3& box);
         void setCameraPose(const trimesh::vec3& position, const trimesh::vec3& viewCenter,
             const trimesh::vec3& upVector);
