@@ -41,8 +41,8 @@ namespace cxnd
 		void setRotateEnabled(bool enabled);
 		void setScaleEnabled(bool enabled);
 		void setTranslateEnabled(bool enabled);
-		void fittingBox(const trimesh::box3& box, bool resetDir = true, CameraViewDirection vd = CameraViewDirection::front);
-		void updateNearFar(const trimesh::box3& box);
+		virtual void fittingBox(const trimesh::box3& box, bool resetDir = true, CameraViewDirection vd = CameraViewDirection::front);
+		virtual void updateNearFar(const trimesh::box3& box);
         void setCameraPose(const trimesh::vec3& position, const trimesh::vec3& viewCenter,
             const trimesh::vec3& upVector);
         void scaleCamera(float factor);
