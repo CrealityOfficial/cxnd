@@ -7,7 +7,7 @@
 namespace cxnd
 {
 	//if box is invalid, move meshes to origin
-	CXND_API void moveMesh2BoxCenter(trimesh::TriMesh* mesh, const trimesh::box3& box = trimesh::box3());
+	CXND_API trimesh::vec3 moveMesh2BoxCenter(trimesh::TriMesh* mesh, const trimesh::box3& box = trimesh::box3());
 	CXND_API void moveMeshes2BoxCenter(std::vector<trimesh::TriMesh*> meshes, const trimesh::box3& box = trimesh::box3());
 
 }
