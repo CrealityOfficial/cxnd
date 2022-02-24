@@ -44,6 +44,7 @@ namespace cxnd
 
 		void select(std::list<Pickable*>& onList, std::list<Pickable*>& offList);
 		void selectAll();
+        void unselectAll();
 		void setSelectGroup(bool bGroup);
 	private:
 		void _add(Pickable* pickable);
