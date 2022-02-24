@@ -253,6 +253,16 @@ namespace cxnd
 		select(onLists, offlist);
 	}
 
+    void Selector::unselectAll()
+    {
+        std::list<Pickable*> onLists;
+        std::list<Pickable*> offlist;
+        for (Pickable* pickable : m_pickables)
+            offlist.push_back(pickable);
+        
+        select(onLists, offlist);
+    }
+
 	void Selector::setSelectGroup(bool bGroup)
 	{
 		m_selectGroup = bGroup;
