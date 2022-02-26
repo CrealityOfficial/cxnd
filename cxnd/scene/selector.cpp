@@ -10,6 +10,7 @@ namespace cxnd
 		, selectNotifying(false)
 		, m_disableReverseSelect(false)
 		, m_selectGroup(false)
+		, m_useFlipSelect(false)
 	{
 	}
 
@@ -25,6 +26,11 @@ namespace cxnd
 	void Selector::disableReverseSelect(bool disable)
 	{
 		m_disableReverseSelect = disable;
+	}
+
+	void Selector::setFlipSelect(bool enabled)
+	{
+		m_useFlipSelect = enabled;
 	}
 
 	void Selector::addPickable(Pickable* pickable)
@@ -201,6 +207,12 @@ namespace cxnd
 
 		if (pickable && !pickable->enableSelect())
 			return;
+
+		if (m_useFlipSelect && pickable)
+		{
+			unselect(pickable);
+			return;
+		}
 
 		if (m_selectGroup) selectGroup(pickable);
 		else select(pickable);

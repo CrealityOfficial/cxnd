@@ -24,6 +24,7 @@ namespace cxnd
 
 		void setPickerSource(PickSource* source);
 		void disableReverseSelect(bool disable);
+		void setFlipSelect(bool enable);
 
 		void addPickable(Pickable* pickable);
 		void removePickable(Pickable* pickable);
@@ -64,6 +65,7 @@ namespace cxnd
 		bool selectNotifying;
 
 		bool m_disableReverseSelect;
+		bool m_useFlipSelect;
 	};
 }
 
