@@ -229,6 +229,9 @@ namespace cxnd
 	void Selector::select(Pickable* pickable)
 	{
 		std::list<Pickable*> offList = selectionmPickables();
+		if (m_useFlipSelect)
+			offList.clear();
+
 		std::list<Pickable*> onList;
 		if (m_disableReverseSelect && !pickable)
 			return;
