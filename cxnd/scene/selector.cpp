@@ -208,7 +208,7 @@ namespace cxnd
 		if (pickable && !pickable->enableSelect())
 			return;
 
-		if (m_useFlipSelect && pickable)
+		if (m_useFlipSelect && pickable && pickable->selected())
 		{
 			unselect(pickable);
 			return;
