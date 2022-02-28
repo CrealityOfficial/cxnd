@@ -136,11 +136,13 @@ namespace cxnd
 
 	void OrbitControls::onOneTouchBegin(TouchSnap& snap)
 	{
+		//LOGI("OrbitControls onOneTouchBegin");
 		m_lastTouch = snap;
 	}
 
 	void OrbitControls::onOneTouchMove(TouchSnap& snap)
 	{
+		//LOGI("OrbitControls onOneTouchMove");
 		if (rotateEnabled() && !(snap == m_lastTouch))
 		{
 			MouseSnap m1(m_lastTouch.touch1, m_lastTouch.touch2, 0.0);
@@ -152,6 +154,7 @@ namespace cxnd
 
 	void OrbitControls::onOneTouchEnd()
 	{
+		//LOGI("OrbitControls onOneTouchEnd");
 	}
 
 	void OrbitControls::performTranslate(MouseSnap& snap1, MouseSnap& snap2)
