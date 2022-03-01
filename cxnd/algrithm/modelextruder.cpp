@@ -1,6 +1,6 @@
 #include "modelextruder.h"
 
-#include "trimesh2/XFORM.H"
+#include "trimesh2/XForm.h"
 
 using namespace cxnd;
 
