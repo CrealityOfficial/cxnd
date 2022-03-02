@@ -254,7 +254,7 @@ namespace cxnd
 		trimesh::box3 box = calculateBox();
 		trimesh::vec3 localPos = localPosition();
 		trimesh::vec3 offset = oldCenter - box.center();
-		trimesh::vec3 zoffset = trimesh::vec3(offset.x, offset.y, -box.min.z);
+		trimesh::vec3 zoffset = trimesh::vec3(offset.x, offset.y, 0.01f - box.min.z);
 		trimesh::vec3 newPosition = localPos + zoffset;
 
 		setLocalPosition(newPosition);
