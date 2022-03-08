@@ -128,7 +128,7 @@ namespace cxnd
 	{
 		if(scaleEnabled())
 		{
-			LOGI("OrbitControls scale %f", snap.touch1);
+			//LOGI("OrbitControls scale %f", snap.touch1);
 			float fScaleFactor = snap.touch1;
 			scaleCamera(fScaleFactor);
 		}

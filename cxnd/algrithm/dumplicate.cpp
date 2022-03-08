@@ -75,7 +75,7 @@ namespace cxnd
 			{
 				if (tracer)
 				{
-					tracer->formatMessage("dumplicateMesh %i", (int)i);
+					//tracer->formatMessage("dumplicateMesh %i", (int)i);
 					tracer->progress((float)i / (float)vertexNum);
 					if (tracer->interrupt())
 					{
