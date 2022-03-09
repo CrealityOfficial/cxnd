@@ -3,6 +3,7 @@
 
 #include "trimesh2/TriMesh.h"
 #include "cxnd/interface.h"
+#include <map>
 
 
 namespace cxnd
@@ -36,11 +37,29 @@ namespace cxnd
 		std::vector<int> getWallOuterUpperVertexIndices() { return m_wallOuterUpperVertexIndices; }
 		std::vector<int> getWallOuterFaceIndices() { return m_wallOuterFaceIndices; }
 
+		void cacheMeshVertices()
+		{
+			if (m_mesh)
+			{
+				m_meshVerticesCache.resize(m_mesh->vertices.size());
+				for (int i = 0; i < m_mesh->vertices.size(); i++)
+				{
+					m_meshVerticesCache[i] = m_mesh->vertices[i];
+				}
+			}
+		}
+		std::vector<trimesh::vec3>& getMeshVerticesCache() { return m_meshVerticesCache; }
+
+		std::map<int, trimesh::dvec2>& getTessCoordsMap() { return m_vertexIndices2TessCoord; }
+		std::map<int, trimesh::vec3>& getTessNormalsMap() { return m_vertexIndices2TessNormal; }
+
 	private:
 		// 网格原点
 		trimesh::dvec3 m_origin;
 		// 模型网格
 		trimesh::TriMesh* m_mesh;
+		// 顶点数据备份
+		std::vector<trimesh::vec3> m_meshVerticesCache;
 		
 		// 上底面中心点
 		// 上底面外围顶点序列
@@ -63,7 +82,13 @@ namespace cxnd
 
 		// 侧面内壁下顶点序列
 		// 侧面内壁上顶点序列
-		// 侧面内壁网格                                     
+		// 侧面内壁网格                         
+
+		// 细分结果
+		// 顶点索引到细分坐标的映射
+		std::map<int, trimesh::dvec2> m_vertexIndices2TessCoord;
+		// 顶点索引到法向量插值的映射
+		std::map<int, trimesh::vec3> m_vertexIndices2TessNormal;
 	};
 
 	class CXND_API ModelExtruder
@@ -77,6 +102,9 @@ namespace cxnd
 			bool roundAngleFlag = false, double roundAngleRadius = 0.1,
 			trimesh::dvec3 origin = trimesh::dvec3(0.0, 0.0, 0.0));
 		bool build2DMould(int edgeCount, double length, double width,
+			bool roundAngleFlag = false, double roundAngleRadius = 0.1,
+			trimesh::dvec3 origin = trimesh::dvec3(0.0, 0.0, 0.0));
+		bool buildRectMould(double width, double length,
 			bool roundAngleFlag = false, double roundAngleRadius = 0.1,
 			trimesh::dvec3 origin = trimesh::dvec3(0.0, 0.0, 0.0));
 		// 基于底面模板进行 z 轴方向的拉伸

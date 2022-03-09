@@ -29,7 +29,7 @@ bool ModelExtruder::build2DMould(int edgeCount, double edgeLength,
 	// 底面模板生成
 	double deltaRadians = 2 * M_PI / edgeCount;
 	double radius = edgeLength / 2.0 / sin(deltaRadians / 2.0);
-	trimesh::dvec3 offsetVector(0.0, 1.0, 0.0);
+	trimesh::dvec3 offsetVector = trimesh::normalized(trimesh::dvec3(1.0, 1.0, 0.0));
 	trimesh::XForm<double> rotMt = trimesh::XForm<double>::rot(deltaRadians, trimesh::dvec3(0.0, 0.0, 1.0));
 	for (int i = 0; i < edgeCount; i++)
 	{
@@ -140,6 +140,59 @@ bool ModelExtruder::build2DMould(int edgeCount, double length, double width,
 	return true;
 }
 
+bool ModelExtruder::buildRectMould(double width, double length, bool roundAngleFlag, double roundAngleRadius, trimesh::dvec3 origin)
+{
+	if (length <= 0 || width <= 0)
+		return false;
+
+	m_origin = origin;
+	m_2DMouldVertices.clear();
+	m_roundAngleRadiusRatePerCtrlVertex.clear();
+
+	// 底面模板生成
+	m_2DMouldVertices.push_back(origin + trimesh::dvec3(1.0, 0.0, 0.0) * length / 2.0 + trimesh::dvec3(0.0, 1.0, 0.0) * width / 2.0);
+	m_2DMouldVertices.push_back(origin - trimesh::dvec3(1.0, 0.0, 0.0) * length / 2.0 + trimesh::dvec3(0.0, 1.0, 0.0) * width / 2.0);
+	m_2DMouldVertices.push_back(origin - trimesh::dvec3(1.0, 0.0, 0.0) * length / 2.0 - trimesh::dvec3(0.0, 1.0, 0.0) * width / 2.0);
+	m_2DMouldVertices.push_back(origin + trimesh::dvec3(1.0, 0.0, 0.0) * length / 2.0 - trimesh::dvec3(0.0, 1.0, 0.0) * width / 2.0);
+
+	// 圆角处理：以上一步生成的模板顶点，及其向左右相邻顶点方向延伸圆角半径长度所得的点为控制点，进行贝塞尔插值，得到圆角顶点
+	if (m_roundAngleFlag)
+	{
+		double t = 0.0;
+		double deltaT = 1.0 / m_roundAngleSampleCount;
+		m_2DMouldCtrlVertices = m_2DMouldVertices;
+		m_2DMouldVertices.clear();
+		for (int i = 0; i < m_2DMouldCtrlVertices.size(); i++)
+		{
+			trimesh::dvec3 curVertex = m_2DMouldCtrlVertices[i];
+			trimesh::dvec3 preVertex = m_2DMouldCtrlVertices[i - 1 < 0 ? m_2DMouldCtrlVertices.size() - 1 : i - 1];
+			trimesh::dvec3 postVertex = m_2DMouldCtrlVertices[i + 1 >= m_2DMouldCtrlVertices.size() ? 0 : i + 1];
+
+			double curpreDis = trimesh::distance(curVertex, preVertex);
+			double curpostDis = trimesh::distance(curVertex, postVertex);
+			// 圆角半径最大只能为边长的一半
+			double curpreRaius = std::min(roundAngleRadius, curpreDis / 2.0);
+			double curpostRaius = std::min(roundAngleRadius, curpostDis / 2.0);
+			trimesh::dvec3 preControl = curVertex + curpreRaius * trimesh::normalized(preVertex - curVertex);
+			trimesh::dvec3 postControl = curVertex + curpostRaius * trimesh::normalized(postVertex - curVertex);
+
+			t = 0.0;
+			for (; t <= 1.0; t += deltaT)
+			{
+				trimesh::dvec3 vertex = BezierSample(t, preControl, curVertex, postControl);
+				m_2DMouldVertices.push_back(vertex);
+			}
+
+			// 圆角半径与边长的比例，用于内壁的圆角处理
+			double curpreRARRate = curpreRaius / curpreDis;
+			double curpostRARRate = curpreRaius / curpostDis;
+			m_roundAngleRadiusRatePerCtrlVertex.push_back({ curpreRARRate, curpostRARRate });
+		}
+	}
+
+	return true;
+}
+
 trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, double bottomThickness, bool roofFlag, ExtrudedMeshTopoData** topoData)
 {
 	if (m_2DMouldVertices.size() < 3 || height <= 0.0 || wallThickness <= 0.0 || bottomThickness <= 0.0)
@@ -168,10 +221,6 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	extrusionMesh->vertices.push_back(trimesh::vec3(m_origin));
 	int bottomUpperOriginIndex = extrusionMesh->vertices.size();
 	extrusionMesh->vertices.push_back(trimesh::vec3(m_origin + bottomThickness * zDir));
-	int roofOriginIndex = extrusionMesh->vertices.size();
-	extrusionMesh->vertices.push_back(trimesh::vec3(m_origin + (bottomThickness + height) * zDir));
-	int roofUpperOriginIndex = extrusionMesh->vertices.size();
-	extrusionMesh->vertices.push_back(trimesh::vec3(m_origin + (bottomThickness + height + bottomThickness) * zDir));
 
 	// 构建壁
 	trimesh::dvec3 bottomUpperOrigin = m_origin/* + bottomThickness * zDir*/;
@@ -274,6 +323,11 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	// 封顶
 	if (roofFlag)
 	{
+		int roofOriginIndex = extrusionMesh->vertices.size();
+		extrusionMesh->vertices.push_back(trimesh::vec3(m_origin + (bottomThickness + height) * zDir));
+		int roofUpperOriginIndex = extrusionMesh->vertices.size();
+		extrusionMesh->vertices.push_back(trimesh::vec3(m_origin + (bottomThickness + height + bottomThickness) * zDir));
+
 		std::vector<int> roofUpperPosIndices;
 		for (i = 0; i < mouldPosNum; i++)
 		{
