@@ -113,7 +113,9 @@ namespace cxnd
 	private:
 		trimesh::dvec3 BezierSample(double t, trimesh::dvec3 preCtrl, trimesh::dvec3 midCtrl, trimesh::dvec3 postCtrl);
 		// 在两个顶点序列之间构建三角面
-		void generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh, bool ringFlag, bool ccwFlag = false, std::vector<int>* newFaceIndices = nullptr);
+		//void generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh, bool ringFlag, bool ccwFlag = false, std::vector<int>* newFaceIndices = nullptr);
+		void generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh,
+			bool ringFlag, bool ccwFlag = false, std::vector<int>* bufferFaceIndices = nullptr, std::vector<int>* newFaceIndices = nullptr);
 		// 在顶点和顶点序列之间构建扇形三角面
 		void generateFaces(int originIndex, std::vector<int> indices, trimesh::TriMesh* resultMesh, bool ccwFlag = false, std::vector<int>* newFaceIndices = nullptr);
 

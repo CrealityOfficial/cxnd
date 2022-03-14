@@ -295,7 +295,7 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	// topo data test
 	std::vector<int> outerWallFaceIndices;
 	generateFaces(outerWallBottomPosIndices, innerWallBottomPosIndices, extrusionMesh, true);
-	generateFaces(outerWallBottomPosIndices, outerWallUpperPosIndices, extrusionMesh, true, true, &outerWallFaceIndices);
+	generateFaces(outerWallBottomPosIndices, outerWallUpperPosIndices, extrusionMesh, true, true, nullptr, &outerWallFaceIndices);
 	generateFaces(innerWallBottomPosIndices, innerWallUpperPosIndices, extrusionMesh, true);
 	generateFaces(outerWallUpperPosIndices, innerWallUpperPosIndices, extrusionMesh, true, true);
 
@@ -350,56 +350,158 @@ trimesh::dvec3 ModelExtruder::BezierSample(double t, trimesh::dvec3 preCtrl, tri
 	return (1 - t) * (1 - t) * preCtrl + 2 * t * (1 - t) * midCtrl + t * t * postCtrl;
 }
 
-void ModelExtruder::generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh, bool ringFlag, bool ccwFlag, std::vector<int>* newFaceIndices)
-{
-	int i, j;
-	int fvIndexA = 0, fvIndexB = 1, fvIndexC = 2;
-	if (ccwFlag)
+//void ModelExtruder::generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh, bool ringFlag, bool ccwFlag, std::vector<int>* newFaceIndices)
+//{
+//	int i, j;
+//	int fvIndexA = 0, fvIndexB = 1, fvIndexC = 2;
+//	if (ccwFlag)
+//	{
+//		fvIndexA = 2;
+//		fvIndexB = 1;
+//		fvIndexC = 0;
+//	}
+//	trimesh::TriMesh::Face face;
+//	for (i = 1, j = 1; i < indicesA.size() || j < indicesB.size();)
+//	{
+//		face[fvIndexA] = indicesA[i];
+//		face[fvIndexB] = indicesA[i - 1];
+//		face[fvIndexC] = indicesB[j - 1];
+//		resultMesh->faces.push_back(face);
+//		if (newFaceIndices)
+//			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
+//
+//		face[fvIndexA] = indicesA[i];
+//		face[fvIndexB] = indicesB[j - 1];
+//		face[fvIndexC] = indicesB[j];
+//		resultMesh->faces.push_back(face);
+//		if (newFaceIndices)
+//			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
+//
+//		if (i < indicesA.size())
+//			i++;
+//		if (j < indicesB.size())
+//			j++;
+//	}
+//
+//	if (ringFlag)
+//	{
+//		face[fvIndexA] = indicesA[0];
+//		face[fvIndexB] = indicesA[i - 1];
+//		face[fvIndexC] = indicesB[j - 1];
+//		resultMesh->faces.push_back(face);
+//		if (newFaceIndices)
+//			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
+//
+//		face[fvIndexA] = indicesA[0];
+//		face[fvIndexB] = indicesB[j - 1];
+//		face[fvIndexC] = indicesB[0];
+//		resultMesh->faces.push_back(face);
+//		if (newFaceIndices)
+//			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
+//	}
+//}
+	void ModelExtruder::generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh,
+		bool ringFlag, bool ccwFlag, std::vector<int>* bufferFaceIndices, std::vector<int>* newFaceIndices)
 	{
-		fvIndexA = 2;
-		fvIndexB = 1;
-		fvIndexC = 0;
+		int i, j;
+		int fvIndexA = 0, fvIndexB = 1, fvIndexC = 2;
+		if (ccwFlag)
+		{
+			fvIndexA = 2;
+			fvIndexB = 1;
+			fvIndexC = 0;
+		}
+		int faceIndex;
+		trimesh::TriMesh::Face face;
+		for (i = 1, j = 1; i < indicesA.size() || j < indicesB.size();)
+		{
+			if (i < indicesA.size())
+			{
+				face[fvIndexA] = indicesA[i];
+				face[fvIndexB] = indicesA[i - 1];
+				face[fvIndexC] = indicesB[j - 1];
+				if (bufferFaceIndices && bufferFaceIndices->size() > 0)
+				{
+					faceIndex = bufferFaceIndices->back();
+					bufferFaceIndices->pop_back();
+					resultMesh->faces[faceIndex] = face;
+				}
+				else
+				{
+					faceIndex = resultMesh->faces.size();
+					resultMesh->faces.push_back(face);
+				}
+				if (newFaceIndices)
+					(*newFaceIndices).push_back(faceIndex);
+			}
+
+
+			if (j < indicesB.size())
+			{
+				if (i == indicesA.size())
+					i = i - 1;
+
+				face[fvIndexA] = indicesA[i];
+				face[fvIndexB] = indicesB[j - 1];
+				face[fvIndexC] = indicesB[j];
+				if (bufferFaceIndices && bufferFaceIndices->size() > 0)
+				{
+					faceIndex = bufferFaceIndices->back();
+					bufferFaceIndices->pop_back();
+					resultMesh->faces[faceIndex] = face;
+				}
+				else
+				{
+					faceIndex = resultMesh->faces.size();
+					resultMesh->faces.push_back(face);
+				}
+				if (newFaceIndices)
+					(*newFaceIndices).push_back(faceIndex);
+			}
+
+			if (i < indicesA.size())
+				i++;
+			if (j < indicesB.size())
+				j++;
+		}
+
+		if (ringFlag)
+		{
+			face[fvIndexA] = indicesA[0];
+			face[fvIndexB] = indicesA[i - 1];
+			face[fvIndexC] = indicesB[j - 1];
+			if (bufferFaceIndices && bufferFaceIndices->size() > 0)
+			{
+				faceIndex = bufferFaceIndices->back();
+				bufferFaceIndices->pop_back();
+				resultMesh->faces[faceIndex] = face;
+			}
+			else
+			{
+				faceIndex = resultMesh->faces.size();
+				resultMesh->faces.push_back(face);
+			}
+			if (newFaceIndices)
+				(*newFaceIndices).push_back(faceIndex);
+
+			face[fvIndexA] = indicesA[0];
+			face[fvIndexB] = indicesB[j - 1];
+			face[fvIndexC] = indicesB[0];
+			if (bufferFaceIndices && bufferFaceIndices->size() > 0)
+			{
+				faceIndex = bufferFaceIndices->back();
+				bufferFaceIndices->pop_back();
+				resultMesh->faces[faceIndex] = face;
+			}
+			else
+			{
+				faceIndex = resultMesh->faces.size();
+				resultMesh->faces.push_back(face);
+			}
+			if (newFaceIndices)
+				(*newFaceIndices).push_back(faceIndex);
+		}
 	}
-	trimesh::TriMesh::Face face;
-	for (i = 1, j = 1; i < indicesA.size() || j < indicesB.size();)
-	{
-		face[fvIndexA] = indicesA[i];
-		face[fvIndexB] = indicesA[i - 1];
-		face[fvIndexC] = indicesB[j - 1];
-		resultMesh->faces.push_back(face);
-		if (newFaceIndices)
-			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
-
-		face[fvIndexA] = indicesA[i];
-		face[fvIndexB] = indicesB[j - 1];
-		face[fvIndexC] = indicesB[j];
-		resultMesh->faces.push_back(face);
-		if (newFaceIndices)
-			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
-
-		if (i < indicesA.size())
-			i++;
-		if (j < indicesB.size())
-			j++;
-	}
-
-	if (ringFlag)
-	{
-		face[fvIndexA] = indicesA[0];
-		face[fvIndexB] = indicesA[i - 1];
-		face[fvIndexC] = indicesB[j - 1];
-		resultMesh->faces.push_back(face);
-		if (newFaceIndices)
-			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
-
-		face[fvIndexA] = indicesA[0];
-		face[fvIndexB] = indicesB[j - 1];
-		face[fvIndexC] = indicesB[0];
-		resultMesh->faces.push_back(face);
-		if (newFaceIndices)
-			(*newFaceIndices).push_back(resultMesh->faces.size() - 1);
-	}
-}
 
 void ModelExtruder::generateFaces(int originIndex, std::vector<int> indices, trimesh::TriMesh* resultMesh, bool ccwFlag, std::vector<int>* newFaceIndices)
 {
