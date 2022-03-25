@@ -50,8 +50,8 @@ namespace cxnd
 		}
 		std::vector<trimesh::vec3>& getMeshVerticesCache() { return m_meshVerticesCache; }
 
-		std::map<int, trimesh::dvec2>& getTessCoordsMap() { return m_vertexIndices2TessCoord; }
-		std::map<int, trimesh::vec3>& getTessNormalsMap() { return m_vertexIndices2TessNormal; }
+		std::vector<trimesh::dvec2>& getTessCoordsVector() { return m_vertexIndices2TessCoord; }
+		std::vector<trimesh::vec3>& getTessNormalsVector() { return m_vertexIndices2TessNormal; }
 
 	private:
 		// 网格原点
@@ -86,9 +86,9 @@ namespace cxnd
 
 		// 细分结果
 		// 顶点索引到细分坐标的映射
-		std::map<int, trimesh::dvec2> m_vertexIndices2TessCoord;
+		std::vector<trimesh::dvec2> m_vertexIndices2TessCoord;
 		// 顶点索引到法向量插值的映射
-		std::map<int, trimesh::vec3> m_vertexIndices2TessNormal;
+		std::vector<trimesh::vec3> m_vertexIndices2TessNormal;
 	};
 
 	class CXND_API ModelExtruder
