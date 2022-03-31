@@ -53,6 +53,13 @@ namespace cxnd
 		std::vector<trimesh::dvec2>& getTessCoordsVector() { return m_vertexIndices2TessCoord; }
 		std::vector<trimesh::vec3>& getTessNormalsVector() { return m_vertexIndices2TessNormal; }
 
+		void clear()
+		{
+			m_meshVerticesCache.clear();
+			m_vertexIndices2TessCoord.clear();
+			m_vertexIndices2TessNormal.clear();
+		}
+
 	private:
 		// Íø¸ñÔ­µã
 		trimesh::dvec3 m_origin;
