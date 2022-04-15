@@ -213,4 +213,21 @@ namespace cxnd
 		return q;
 	}
 
+	void partScale(const trimesh::vec3& center, const trimesh::box3& part,
+		const trimesh::vec3& scale, trimesh::vec3& outScale, trimesh::vec3& outOffset)
+	{
+		trimesh::vec3 c = center;
+		trimesh::vec3 pmin = part.min;
+		trimesh::vec3 pmax = part.max;
+		trimesh::vec3 pcenter = part.center();
+		trimesh::vec3 psize = part.size();
+
+		trimesh::vec3 newPMin = (pmin - c) * scale + c;
+		trimesh::vec3 newPMax = (pmax - c) * scale + c;
+		trimesh::vec3 newCenter = (newPMin + newPMax) / 2.0f;
+		trimesh::vec3 newSize = newPMax - newPMin;
+
+		outScale = newSize / psize;
+		outOffset = newCenter - pcenter;
+	}
 }

@@ -100,6 +100,33 @@ namespace cxnd
 		return cxnd::screenRay(*this, pixel, trimesh::vec2(width, height));
 	}
 
+	void Camera::fittingBoxDirection(const trimesh::box3& box, const trimesh::vec3& up, const trimesh::vec3& direction)
+	{
+		trimesh::vec3 center = box.center();
+		trimesh::vec3 size = box.size();
+
+		float _fovy = this->fovy * M_PIf / 180.0f;
+
+		auto f = [](trimesh::vec3 size, float fovy)->float {
+			float r = trimesh::len(size) / 2.0f;
+			return r / sinf(fovy / 2.0f);
+		};
+
+		float len1 = f(size, _fovy);
+		float len2 = f(size, 2.0f * atanf(this->aspectRatio * tanf(_fovy / 2.0f)));
+		float len = len1 > len2 ? len1 : len2;
+
+		trimesh::vec3 dir = direction;
+
+		trimesh::vec3 eye = center - dir * len;
+
+		this->position = eye;
+		this->viewCenter = center;
+		this->upVector = up;
+
+		updateNearFar(box);
+	}
+
 	void Camera::fittingBox(const trimesh::box3& box, bool resetDir, CameraViewDirection vd)
 	{
 		trimesh::vec3 center = box.center();

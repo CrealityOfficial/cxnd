@@ -39,6 +39,7 @@ namespace cxnd
 		float verticalAngle();
 		Ray screenRay(const trimesh::vec2& pixel);
 		void fittingBox(const trimesh::box3& box, bool resetDir = true, CameraViewDirection vd = CameraViewDirection::front);
+		void fittingBoxDirection(const trimesh::box3& box, const trimesh::vec3& up, const trimesh::vec3& direction);
 		void updateNearFar(const trimesh::box3& box);
 		void setSize(int width, int height);
         float defaultFovy();

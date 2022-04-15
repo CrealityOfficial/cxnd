@@ -156,6 +156,16 @@ namespace cxnd
 		notifyProjectionMatrix();
 	}
 
+	void CameraControls::fittingBoxDirection(const trimesh::box3& box, const trimesh::vec3& up, const trimesh::vec3& direction)
+	{
+		if (!m_camera)
+			return;
+
+		m_camera->fittingBoxDirection(box, up, direction);
+		notifyViewMatrix();
+		notifyProjectionMatrix();
+	}
+
 	void CameraControls::fittingBox(const trimesh::box3& box, bool resetDir, CameraViewDirection vd)
 	{
 		if (!m_camera)

@@ -24,6 +24,8 @@ namespace cxnd
 	CXND_API float radianOfVector3D2(const trimesh::vec3& v1, const trimesh::vec3& v2);
 
 	CXND_API trimesh::quaternion quaternionFromVector3D2(const trimesh::vec3& v1, const trimesh::vec3& v2);
-
+	
+	CXND_API void partScale(const trimesh::vec3& center, const trimesh::box3& part,
+		const trimesh::vec3& scale, trimesh::vec3& outScale, trimesh::vec3& outOffset);
 }
 #endif // CREATIVE_KERNEL_ALGRITHM3D_1593580656409_H
