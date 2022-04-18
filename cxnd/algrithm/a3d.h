@@ -27,5 +27,7 @@ namespace cxnd
 	
 	CXND_API void partScale(const trimesh::vec3& center, const trimesh::box3& part,
 		const trimesh::vec3& scale, trimesh::vec3& outScale, trimesh::vec3& outOffset);
+
+	CXND_API trimesh::box3 extendBoxXY(const trimesh::box3& box, const trimesh::vec3& center);
 }
 #endif // CREATIVE_KERNEL_ALGRITHM3D_1593580656409_H

@@ -230,4 +230,22 @@ namespace cxnd
 		outScale = newSize / psize;
 		outOffset = newCenter - pcenter;
 	}
+
+	trimesh::box3 extendBoxXY(const trimesh::box3& box, const trimesh::vec3& center)
+	{
+		float xmax = std::max(std::fabsf(box.max.x - center.x), 
+							std::fabsf(box.min.x - center.x));
+		float ymax = std::max(std::fabsf(box.max.y - center.y),
+							std::fabsf(box.min.y - center.y));
+
+		trimesh::vec3 dmin = center - trimesh::vec3(xmax, ymax, 0.0f);
+		dmin.z = box.min.z;
+		trimesh::vec3 dmax = center + trimesh::vec3(xmax, ymax, 0.0f);
+		dmax.z = box.max.z;
+
+		trimesh::box3 b;
+		b += dmin;
+		b += dmax;
+		return b;
+	}
 }
