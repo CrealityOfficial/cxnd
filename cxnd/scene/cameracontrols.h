@@ -48,6 +48,7 @@ namespace cxnd
             const trimesh::vec3& upVector);
         void scaleCamera(float factor);
         
+		void setVisualBox(const trimesh::box3& box);
 	protected:
 		void notifyViewMatrix();
 		void notifyProjectionMatrix();
@@ -71,6 +72,8 @@ namespace cxnd
 		Camera* m_camera;
 		float m_maxFovy;
 		float m_minFovy;
+
+		trimesh::box3 m_visualBox;
 	};
 }
 

@@ -181,6 +181,8 @@ namespace cxnd
 		trimesh::vec3 newUpVector = m_camera->upVector;
 
 		setCameraPose(newPosition, newViewCenter, newUpVector);
+
+		updateNearFar(m_visualBox);
 	}
 
 	void OrbitControls::performRotate(MouseSnap& snap1, MouseSnap& snap2)
@@ -229,5 +231,7 @@ namespace cxnd
 			return;
 
 		setCameraPose(newPosition, viewCenter, up);
+
+		updateNearFar(m_visualBox);
 	}
 }

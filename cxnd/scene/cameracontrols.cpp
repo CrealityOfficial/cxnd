@@ -156,6 +156,11 @@ namespace cxnd
 		notifyProjectionMatrix();
 	}
 
+	void CameraControls::setVisualBox(const trimesh::box3& box)
+	{
+		m_visualBox = box;
+	}
+
 	void CameraControls::fittingBoxDirection(const trimesh::box3& box, const trimesh::vec3& up, const trimesh::vec3& direction)
 	{
 		if (!m_camera)
@@ -171,6 +176,7 @@ namespace cxnd
 		if (!m_camera)
 			return;
 
+		m_visualBox = box;
 		m_camera->fittingBox(box, resetDir, vd);
 		notifyViewMatrix();
 		notifyProjectionMatrix();
