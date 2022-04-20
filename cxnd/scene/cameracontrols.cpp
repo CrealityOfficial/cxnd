@@ -159,6 +159,9 @@ namespace cxnd
 	void CameraControls::setVisualBox(const trimesh::box3& box)
 	{
 		m_visualBox = box;
+		if(m_camera)
+			m_camera->updateNearFar(m_visualBox);
+		notifyProjectionMatrix();
 	}
 
 	void CameraControls::fittingBoxDirection(const trimesh::box3& box, const trimesh::vec3& up, const trimesh::vec3& direction)
@@ -166,8 +169,14 @@ namespace cxnd
 		if (!m_camera)
 			return;
 
+		if (!m_visualBox.valid)
+			m_visualBox = box;
+
 		m_camera->fittingBoxDirection(box, up, direction);
 		notifyViewMatrix();
+
+		if (m_visualBox.valid)
+			m_camera->updateNearFar(m_visualBox);
 		notifyProjectionMatrix();
 	}
 
@@ -176,38 +185,15 @@ namespace cxnd
 		if (!m_camera)
 			return;
 
-		m_visualBox = box;
+		if (!m_visualBox.valid)
+			m_visualBox = box;
+
 		m_camera->fittingBox(box, resetDir, vd);
 		notifyViewMatrix();
-		notifyProjectionMatrix();
 
-		//trimesh::vec3 center = box.center();
-		//trimesh::vec3 size = box.size();
-		//
-		//float fovy = m_camera->fovy * M_PIf / 180.0f;
-		//
-		//auto f = [](float z, float x, float fovy)->float {
-		//	float r = sqrtf(x * x + z * z) / 2.0f;
-		//	return r / sinf(fovy / 2.0f);
-		//};
-		//
-		//float len1 = f(size.z, size.y, fovy);
-		//float len2 = f(size.x, size.y, 2.0f * atanf(m_camera->aspectRatio * tanf(fovy / 2.0f)));
-		//float len = len1 > len2 ? len1 : len2;
-		//
-		//LOGI("CameraControls fittingBox %f %f %f", m_camera->aspectRatio, len1, len2);
-		//trimesh::vec3 up = trimesh::vec3(0.0f, 0.0f, 1.0f);
-		//trimesh::vec3 dir = trimesh::vec3(0.0f, -1.0f, 0.0f);
-		//if (!resetDir)
-		//{
-		//	up = m_camera->upVector;
-		//	dir = - m_camera->direction();
-		//}
-		//trimesh::vec3 eye = center + dir * len;
-		//
-		//setCameraPose(eye, center, up);
-		//updateNearFar(box);
-		//notifyViewMatrix();
+		if (m_visualBox.valid)
+			m_camera->updateNearFar(m_visualBox);
+		notifyProjectionMatrix();
 	}
 
 	void CameraControls::updateNearFar(const trimesh::box3& box)
