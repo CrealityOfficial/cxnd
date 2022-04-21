@@ -8,6 +8,8 @@ set(SRCS cxnd/interface.h
 		 cxnd/algrithm/merge.cpp
 		 cxnd/algrithm/a3d.h
 		 cxnd/algrithm/a3d.cpp
+		 cxnd/algrithm/a2d.h
+		 cxnd/algrithm/a2d.cpp
 		 cxnd/algrithm/modelextruder.h
 		 cxnd/algrithm/modelextruder.cpp
 		 cxnd/algrithm/raymesh.h
@@ -20,6 +22,8 @@ set(SRCS cxnd/interface.h
 		 cxnd/struct/triangleaabbtree.cpp
 		 cxnd/struct/ray.h
 		 cxnd/struct/ray.cpp
+		 cxnd/struct/complexpolygon2d.h
+		 cxnd/struct/complexpolygon2d.cpp
 		 cxnd/scene/snode.h
 		 cxnd/scene/snode.cpp
 		 cxnd/scene/camera.h
