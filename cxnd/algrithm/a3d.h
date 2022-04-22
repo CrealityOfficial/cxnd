@@ -4,6 +4,7 @@
 #include "trimesh2/Vec.h"
 #include "trimesh2/Box.h"
 #include "trimesh2/quaternion.h"
+#include "trimesh2/XForm.h"
 
 namespace cxnd
 {
@@ -29,5 +30,7 @@ namespace cxnd
 		const trimesh::vec3& scale, trimesh::vec3& outScale, trimesh::vec3& outOffset);
 
 	CXND_API trimesh::box3 extendBoxXY(const trimesh::box3& box, const trimesh::vec3& center);
+
+	CXND_API trimesh::fxform applyBox(const trimesh::box3& tbox, const trimesh::box3& sbox, bool sameScale = true);
 }
 #endif // CREATIVE_KERNEL_ALGRITHM3D_1593580656409_H

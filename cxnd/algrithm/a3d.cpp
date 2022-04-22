@@ -248,4 +248,25 @@ namespace cxnd
 		b += dmax;
 		return b;
 	}
+
+	trimesh::fxform applyBox(const trimesh::box3& tbox, const trimesh::box3& sbox, bool sameScale)
+	{
+		trimesh::fxform xf = trimesh::fxform::identity();
+
+		if (tbox.valid && sbox.valid)
+		{
+			trimesh::vec3 tcenter = tbox.center();
+			trimesh::vec3 scenter = sbox.center();
+			trimesh::vec3 scale = tbox.size() / sbox.size();
+			if (sameScale)
+			{
+				float s = std::min(std::min(scale.x, scale.y), scale.z);
+				scale = trimesh::vec3(s, s, s);
+			}
+			xf = trimesh::fxform::trans(tcenter)
+				* trimesh::fxform::scale(scale.x, scale.y, scale.z)
+				* trimesh::fxform::trans(scenter);
+		}
+		return xf;
+	}
 }
