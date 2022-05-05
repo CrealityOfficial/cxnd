@@ -1,4 +1,4 @@
-#include "modelextruder.h"
+﻿#include "modelextruder.h"
 #include "trimesh2/XForm.h"
 using namespace cxnd;
 
@@ -203,7 +203,14 @@ trimesh::TriMesh* ModelExtruder::extrude(double height, double wallThickness, do
 	// 柱体拓扑信息
 	if (topoData)
 	{
-		*topoData = new ExtrudedMeshTopoData(extrusionMesh, m_origin);
+		if (*topoData == nullptr)
+			*topoData = new ExtrudedMeshTopoData(extrusionMesh, m_origin);
+		else
+		{
+			(*topoData)->clearAll();
+			(*topoData)->setMesh(extrusionMesh);
+			(*topoData)->setOrigin(m_origin);
+		}
 	}
 
 	int i;

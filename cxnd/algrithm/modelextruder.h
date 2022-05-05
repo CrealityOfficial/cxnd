@@ -1,4 +1,4 @@
-#ifndef CXND_MODELEXTRUDER_1630552672911_H
+ï»¿#ifndef CXND_MODELEXTRUDER_1630552672911_H
 #define CXND_MODELEXTRUDER_1630552672911_H
 
 #include "trimesh2/TriMesh.h"
@@ -8,7 +8,7 @@
 
 namespace cxnd
 {
-	// ÖùÌåÍø¸ñµÄÍØÆËĞÅÏ¢
+	// æŸ±ä½“ç½‘æ ¼çš„æ‹“æ‰‘ä¿¡æ¯
 	class CXND_API ExtrudedMeshTopoData
 	{
 	public:
@@ -30,7 +30,10 @@ namespace cxnd
 		}
 		//void setWallInnerData();
 
+		void setMesh(trimesh::TriMesh* mesh) { m_mesh = mesh; }
 		trimesh::TriMesh* getMesh() { return m_mesh; }
+
+		void setOrigin(trimesh::dvec3 origin) { m_origin = origin; }
 		trimesh::dvec3 getOrigin() { return m_origin; }
 
 		std::vector<int> getWallOuterLowerVertexIndices() { return m_wallOuterLowerVertexIndices; }
@@ -60,41 +63,54 @@ namespace cxnd
 			m_vertexIndices2TessNormal.clear();
 		}
 
+		void clearAll()
+		{
+			m_mesh = nullptr;
+
+			m_wallOuterLowerVertexIndices.clear();
+			m_wallOuterUpperVertexIndices.clear();
+			m_wallOuterFaceIndices.clear();
+
+			m_meshVerticesCache.clear();
+			m_vertexIndices2TessCoord.clear();
+			m_vertexIndices2TessNormal.clear();
+		}
+
 	private:
-		// Íø¸ñÔ­µã
+		// ç½‘æ ¼åŸç‚¹
 		trimesh::dvec3 m_origin;
-		// Ä£ĞÍÍø¸ñ
+		// æ¨¡å‹ç½‘æ ¼
 		trimesh::TriMesh* m_mesh;
-		// ¶¥µãÊı¾İ±¸·İ
+		// é¡¶ç‚¹æ•°æ®å¤‡ä»½
 		std::vector<trimesh::vec3> m_meshVerticesCache;
 		
-		// ÉÏµ×ÃæÖĞĞÄµã
-		// ÉÏµ×ÃæÍâÎ§¶¥µãĞòÁĞ
-		// ÉÏµ×ÃæÍø¸ñ
+		// ä¸Šåº•é¢ä¸­å¿ƒç‚¹
+		// ä¸Šåº•é¢å¤–å›´é¡¶ç‚¹åºåˆ—
+		// ä¸Šåº•é¢ç½‘æ ¼
 		
 
-		// ÏÂµ×ÃæÖĞĞÄµã
-		// ÏÂµ×ÃæÍâÎ§¶¥µãĞòÁĞ
-		// ÏÂµ×ÃæÍø¸ñ
+		// ä¸‹åº•é¢ä¸­å¿ƒç‚¹
+		// ä¸‹åº•é¢å¤–å›´é¡¶ç‚¹åºåˆ—
+		// ä¸‹åº•é¢ç½‘æ ¼
 
 
-		// ²àÃæÍø¸ñ
+		// ä¾§é¢ç½‘æ ¼
 		
-		// ²àÃæÍâ±ÚÏÂ¶¥µãĞòÁĞ *
+		// ä¾§é¢å¤–å£ä¸‹é¡¶ç‚¹åºåˆ— *
 		std::vector<int> m_wallOuterLowerVertexIndices;
-		// ²àÃæÍâ±ÚÉÏ¶¥µãĞòÁĞ *
+		// ä¾§é¢å¤–å£ä¸Šé¡¶ç‚¹åºåˆ— *
 		std::vector<int> m_wallOuterUpperVertexIndices;
-		// ²àÃæÍâ±ÚÍø¸ñ *
+		// ä¾§é¢å¤–å£ç½‘æ ¼ *
 		std::vector<int> m_wallOuterFaceIndices;
 
-		// ²àÃæÄÚ±ÚÏÂ¶¥µãĞòÁĞ
-		// ²àÃæÄÚ±ÚÉÏ¶¥µãĞòÁĞ
-		// ²àÃæÄÚ±ÚÍø¸ñ                         
+		// ä¾§é¢å†…å£ä¸‹é¡¶ç‚¹åºåˆ—
+		// ä¾§é¢å†…å£ä¸Šé¡¶ç‚¹åºåˆ—
+		// ä¾§é¢å†…å£ç½‘æ ¼                         
 
-		// Ï¸·Ö½á¹û
-		// ¶¥µãË÷Òıµ½Ï¸·Ö×ø±êµÄÓ³Éä
+		// ç»†åˆ†ç»“æœ
+		// é¡¶ç‚¹ç´¢å¼•åˆ°ç»†åˆ†åæ ‡çš„æ˜ å°„
 		std::vector<trimesh::dvec2> m_vertexIndices2TessCoord;
-		// ¶¥µãË÷Òıµ½·¨ÏòÁ¿²åÖµµÄÓ³Éä
+		// é¡¶ç‚¹ç´¢å¼•åˆ°æ³•å‘é‡æ’å€¼çš„æ˜ å°„
 		std::vector<trimesh::vec3> m_vertexIndices2TessNormal;
 	};
 
@@ -104,7 +120,7 @@ namespace cxnd
 		ModelExtruder();
 		virtual ~ModelExtruder();
 
-		// ¸ù¾İ²»Í¬²ÎÊı¹¹½¨µ×ÃæÄ£°å£¬ÈôÆôÓÃÔ²½Ç£¬Ô²½Ç°ë¾¶±ØĞëĞ¡ÓÚµÈÓÚ±ß³¤µÄÒ»°ë£¬·ñÔò»á×Ô¶¯ĞŞÕıÎª±ß³¤µÄÒ»°ë
+		// æ ¹æ®ä¸åŒå‚æ•°æ„å»ºåº•é¢æ¨¡æ¿ï¼Œè‹¥å¯ç”¨åœ†è§’ï¼Œåœ†è§’åŠå¾„å¿…é¡»å°äºç­‰äºè¾¹é•¿çš„ä¸€åŠï¼Œå¦åˆ™ä¼šè‡ªåŠ¨ä¿®æ­£ä¸ºè¾¹é•¿çš„ä¸€åŠ
 		bool build2DMould(int edgeCount, double edgeLength,
 			bool roundAngleFlag = false, double roundAngleRadius = 0.1,
 			trimesh::dvec3 origin = trimesh::dvec3(0.0, 0.0, 0.0));
@@ -114,16 +130,16 @@ namespace cxnd
 		bool buildRectMould(double width, double length,
 			bool roundAngleFlag = false, double roundAngleRadius = 0.1,
 			trimesh::dvec3 origin = trimesh::dvec3(0.0, 0.0, 0.0));
-		// »ùÓÚµ×ÃæÄ£°å½øĞĞ z Öá·½ÏòµÄÀ­Éì
+		// åŸºäºåº•é¢æ¨¡æ¿è¿›è¡Œ z è½´æ–¹å‘çš„æ‹‰ä¼¸
 		trimesh::TriMesh* extrude(double height, double wallThickness, double bottomThickness, bool roofFlag = false, ExtrudedMeshTopoData** topoData = nullptr);
 
 	private:
 		trimesh::dvec3 BezierSample(double t, trimesh::dvec3 preCtrl, trimesh::dvec3 midCtrl, trimesh::dvec3 postCtrl);
-		// ÔÚÁ½¸ö¶¥µãĞòÁĞÖ®¼ä¹¹½¨Èı½ÇÃæ
+		// åœ¨ä¸¤ä¸ªé¡¶ç‚¹åºåˆ—ä¹‹é—´æ„å»ºä¸‰è§’é¢
 		//void generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh, bool ringFlag, bool ccwFlag = false, std::vector<int>* newFaceIndices = nullptr);
 		void generateFaces(std::vector<int> indicesA, std::vector<int> indicesB, trimesh::TriMesh* resultMesh,
 			bool ringFlag, bool ccwFlag = false, std::vector<int>* bufferFaceIndices = nullptr, std::vector<int>* newFaceIndices = nullptr);
-		// ÔÚ¶¥µãºÍ¶¥µãĞòÁĞÖ®¼ä¹¹½¨ÉÈĞÎÈı½ÇÃæ
+		// åœ¨é¡¶ç‚¹å’Œé¡¶ç‚¹åºåˆ—ä¹‹é—´æ„å»ºæ‰‡å½¢ä¸‰è§’é¢
 		void generateFaces(int originIndex, std::vector<int> indices, trimesh::TriMesh* resultMesh, bool ccwFlag = false, std::vector<int>* newFaceIndices = nullptr);
 
 	protected:
