@@ -269,4 +269,96 @@ namespace cxnd
 		}
 		return xf;
 	}
+
+	trimesh::vec3 point3DFromVector2D(const trimesh::vec2& point, const trimesh::vec2& center, const trimesh::vec2& size, bool skipz)
+	{
+		return point3DFromVector2D(point, center, size.x, size.y, skipz);
+	}
+
+	trimesh::vec3 point3DFromVector2D(const trimesh::vec2& point, const trimesh::vec2& center, float width, float height, bool skipz)
+	{
+		trimesh::vec3 pt3D;
+
+		float dx = point.x - center.x;
+		float dy = point.y - center.y;
+
+		float width2 = std::max(std::fabs(dx), std::min(std::fabs(width - center.x), std::fabs(center.x)));
+		float height2 = std::max(std::fabs(dy), std::min(std::fabs(height - center.y), std::fabs(center.y)));
+
+		float maxDim = std::max(width2, height2);
+
+		pt3D[0] = dx / maxDim;
+		pt3D[1] = dy / maxDim;
+
+		if (skipz)
+		{
+			pt3D[2] = 0.0f;
+			trimesh::normalize(pt3D);
+		}
+		else
+		{
+			/// Sphere equation : (x-x_o)^2 + (y-y_o)^2 + (z-z_o)^2 = R^2
+			/// we take Center O(x_o=0, y_o=0, z_o=0) and R = 1
+			float x2_plus_y2 = (pt3D.x * pt3D.x + pt3D.y * pt3D.y);
+			if (x2_plus_y2 > 1.0f)
+			{
+				pt3D.z = 0.0f;
+
+				// fast normalization
+				float length = sqrt(x2_plus_y2);
+				pt3D[0] /= length;
+				pt3D[1] /= length;
+			}
+			else
+			{
+				pt3D[2] = sqrt(1.0f - x2_plus_y2);
+			}
+		}
+
+		return pt3D;
+	}
+
+	void boxFittingBox(const trimesh::box3& baseBounding, const trimesh::box3& initBox, trimesh::vec3& translate, trimesh::vec3& scale)
+	{
+		trimesh::vec3 baseSize = baseBounding.size();
+		trimesh::vec3 initSize = initBox.size();
+
+		trimesh::vec3 ratio = baseSize / initSize;
+		float fscale = std::min(ratio.x, std::min(ratio.y, ratio.z));
+
+		scale = trimesh::vec3(fscale, fscale, fscale);
+
+		trimesh::vec3 corner = initBox.center() - 0.5f * scale * initBox.size();
+		translate = baseBounding.min - corner;
+	}
+
+	trimesh::box3 transformBox(const trimesh::fxform& matrix, const trimesh::box3& box)
+	{
+		trimesh::box3 tbox;
+		if (box.valid)
+		{
+			trimesh::vec3 bmin = box.min;
+			trimesh::vec3 bmax = box.max;
+			tbox += matrix * trimesh::vec3(bmin.x, bmin.y, bmin.z);
+			tbox += matrix * trimesh::vec3(bmin.x, bmin.y, bmax.z);
+			tbox += matrix * trimesh::vec3(bmin.x, bmax.y, bmax.z);
+			tbox += matrix * trimesh::vec3(bmin.x, bmax.y, bmin.z);
+			tbox += matrix * trimesh::vec3(bmax.x, bmin.y, bmin.z);
+			tbox += matrix * trimesh::vec3(bmax.x, bmin.y, bmax.z);
+			tbox += matrix * trimesh::vec3(bmax.x, bmax.y, bmax.z);
+			tbox += matrix * trimesh::vec3(bmax.x, bmax.y, bmin.z);
+		}
+		return tbox;
+	}
+
+	bool lineCollidePlane(const trimesh::vec3& planeCenter, const trimesh::vec3& planeDir, const Ray& ray, trimesh::vec3& collide)
+	{
+		float l = trimesh::dot(ray.dir, planeDir);
+		if (l == 0.0f) return false;
+
+		float t = trimesh::dot(planeDir, (planeCenter - ray.start)) / l;
+		collide = ray.start + ray.dir * t;
+		return true;
+	}
+
 }
