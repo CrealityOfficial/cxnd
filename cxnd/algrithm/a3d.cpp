@@ -361,4 +361,66 @@ namespace cxnd
 		return true;
 	}
 
+	trimesh::fxform layMatrixFromPositionNormal(const trimesh::vec3& position, const trimesh::vec3& normal, const trimesh::vec3& scale, const trimesh::vec3& originNormal)
+	{
+		trimesh::fxform matrix;
+		matrix.trans(position);
+
+		float angle = angleOfVector3D2(normal, originNormal);
+		trimesh::vec3 axis = trimesh::cross(originNormal, normal);
+		trimesh::normalize(axis);
+		if (abs(axis.x) < 0.00001 && abs(axis.y) < 0.00001 && abs(axis.z) < 0.00001)
+		{
+			axis.at(1) = 1;
+		}
+
+		matrix.rot(angle, axis);
+		matrix.scale(scale.x,scale.y,scale.z);
+
+		trimesh::fxform rotateMatrix;
+		rotateMatrix.rot(angle, axis);
+
+		trimesh::vec3 newNormal = rotateMatrix * originNormal;
+
+		trimesh::vec3 useNormal = normal + newNormal;
+
+		if (abs(useNormal.x) < 0.00001 && abs(useNormal.y) < 0.00001 && abs(useNormal.z) < 0.00001)
+		{
+			matrix.identity();
+			matrix.trans(position);
+			matrix.rot(angle, -axis);
+			matrix.scale(scale.x, scale.y, scale.z);
+		}
+
+		return matrix;
+	}
+
+
+	trimesh::fxform layArrowMatrix(const trimesh::vec3& position, const trimesh::vec3& normal, const trimesh::vec3& scale)
+	{
+		trimesh::vec3 originNormal(0.0f, 1.0f, 0.0f);
+		return layMatrixFromPositionNormal(position, normal, scale, originNormal);
+	}
+
+	trimesh::fxform layArrowMatrix2(const trimesh::vec3& position, const trimesh::vec3& normal, const trimesh::vec3& size, float ratio /*= 60.0f*/)
+	{
+		float s = 1.0f;
+		trimesh::vec3 scope = size;
+		s = scope.x > scope.y ? scope.x : scope.y;
+		s = s > scope.z ? s : scope.z;
+
+		if (ratio <= 0.0f) ratio = 60.0f;
+		s /= 60.0f;
+
+		trimesh::vec3 scale(s, s, s);
+		return layArrowMatrix(position, normal, scale);
+	}
+
+	int adjustY(int y, const trimesh::vec2& size)
+	{
+		int ay = size.at(0) - y;
+		if (ay < 0) ay = 0;
+		if (ay > size.at(0)) ay = size.at(0);
+		return ay;
+	}
 }

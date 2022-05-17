@@ -5,7 +5,7 @@
 #include "trimesh2/Box.h"
 #include "trimesh2/quaternion.h"
 #include "trimesh2/XForm.h"
-#include "cxnd/algrithm/raymesh.h"
+#include "cxnd/struct/ray.h"
 
 namespace cxnd
 {
@@ -44,5 +44,12 @@ namespace cxnd
 
 	CXND_API bool lineCollidePlane(const trimesh::vec3& planeCenter, const trimesh::vec3& planeDir, const cxnd::Ray& ray, trimesh::vec3& collide);
 
+	CXND_API trimesh::fxform layMatrixFromPositionNormal(const trimesh::vec3& position, const trimesh::vec3& normal, const trimesh::vec3& scale, const trimesh::vec3& originNormal);
+
+	CXND_API trimesh::fxform layArrowMatrix(const trimesh::vec3& position, const trimesh::vec3& normal, const trimesh::vec3& scale);
+
+	CXND_API trimesh::fxform layArrowMatrix2(const trimesh::vec3& position, const trimesh::vec3& normal, const trimesh::vec3& size, float ratios = 60.0f);
+
+	CXND_API int adjustY(int y, const trimesh::vec2& size);
 }
 #endif // CREATIVE_KERNEL_ALGRITHM3D_1593580656409_H
