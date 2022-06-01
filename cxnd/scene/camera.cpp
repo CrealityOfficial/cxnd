@@ -18,7 +18,7 @@ namespace cxnd
 		, width(10.0f)
 		, height(10.0f)   //fit with aspectRatio
 	{
-
+		upVector = trimesh::vec3(1.0f, 0.0f, 0.0f);
 	}
 
 	Camera::~Camera()
