@@ -270,6 +270,12 @@ namespace cxnd
 		return xf;
 	}
 
+	trimesh::vec3 centerBox(const trimesh::vec3& center, const std::vector<trimesh::box3>& boxes, bool ignoreZ)
+	{
+		trimesh::vec3 offset;
+		return offset;
+	}
+
 	trimesh::vec3 point3DFromVector2D(const trimesh::vec2& point, const trimesh::vec2& center, const trimesh::vec2& size, bool skipz)
 	{
 		return point3DFromVector2D(point, center, size.x, size.y, skipz);

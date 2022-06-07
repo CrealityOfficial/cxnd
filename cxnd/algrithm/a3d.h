@@ -7,6 +7,8 @@
 #include "trimesh2/XForm.h"
 #include "cxnd/struct/ray.h"
 
+#include <vector>
+
 namespace cxnd
 {
 	CXND_API bool rayIntersectTriangle(const trimesh::vec3& orig, const trimesh::vec3& dir,
@@ -33,6 +35,7 @@ namespace cxnd
 	CXND_API trimesh::box3 extendBoxXY(const trimesh::box3& box, const trimesh::vec3& center);
 
 	CXND_API trimesh::fxform applyBox(const trimesh::box3& tbox, const trimesh::box3& sbox, bool sameScale = true);
+	CXND_API trimesh::vec3 centerBox(const trimesh::vec3& center, const std::vector<trimesh::box3>& boxes, bool ignoreZ = true);
 
 	CXND_API trimesh::vec3 point3DFromVector2D(const trimesh::vec2& point, const trimesh::vec2& center, const trimesh::vec2& size, bool skipz);
 
