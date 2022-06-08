@@ -272,7 +272,45 @@ namespace cxnd
 
 	trimesh::vec3 centerBox(const trimesh::vec3& center, const std::vector<trimesh::box3>& boxes, bool ignoreZ)
 	{
-		trimesh::vec3 offset;
+		trimesh::box3 allBox;
+		if (boxes.size() > 0)
+		{
+			allBox = boxes[0];
+		}
+
+		for (const trimesh::box3& abox : boxes)
+		{
+			if (abox.max.x > allBox.max.x)
+			{
+				allBox.max.x = abox.max.x;
+			}
+			if (abox.max.y > allBox.max.y)
+			{
+				allBox.max.y = abox.max.y;
+			}
+			if (abox.max.z > allBox.max.z)
+			{
+				allBox.max.z = abox.max.z;
+			}
+
+			if (abox.min.x < allBox.min.x)
+			{
+				allBox.min.x = abox.min.x;
+			}
+			if (abox.min.y < allBox.min.y)
+			{
+				allBox.min.y = abox.min.y;
+			}
+			if (abox.min.z < allBox.min.z)
+			{
+				allBox.min.z = abox.min.z;
+			}
+		}
+		trimesh::vec3 offset = center - allBox.center();
+		if (ignoreZ)
+		{
+			offset.z = 0.0;
+		}
 		return offset;
 	}
 
