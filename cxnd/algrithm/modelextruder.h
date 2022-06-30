@@ -53,6 +53,8 @@ namespace cxnd
 		}
 		std::vector<trimesh::vec3>& getMeshVerticesCache() { return m_meshVerticesCache; }
 
+		int& getXTessCount() { return m_xTessCount; }
+		int& getYTessCount() { return m_yTessCount; }
 		std::vector<trimesh::dvec2>& getTessCoordsVector() { return m_vertexIndices2TessCoord; }
 		std::vector<trimesh::vec3>& getTessNormalsVector() { return m_vertexIndices2TessNormal; }
 
@@ -108,6 +110,10 @@ namespace cxnd
 		// 侧面内壁网格                         
 
 		// 细分结果
+		// x 方向细分数
+		int m_xTessCount;
+		// y 方向细分数
+		int m_yTessCount;
 		// 顶点索引到细分坐标的映射
 		std::vector<trimesh::dvec2> m_vertexIndices2TessCoord;
 		// 顶点索引到法向量插值的映射
