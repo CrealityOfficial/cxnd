@@ -10,8 +10,6 @@ set(SRCS cxnd/interface.h
 		 cxnd/algrithm/a3d.cpp
 		 cxnd/algrithm/a2d.h
 		 cxnd/algrithm/a2d.cpp
-		 cxnd/algrithm/modelextruder.h
-		 cxnd/algrithm/modelextruder.cpp
 		 cxnd/algrithm/raymesh.h
 		 cxnd/algrithm/raymesh.cpp
 		 cxnd/algrithm/rtsmesh.h
