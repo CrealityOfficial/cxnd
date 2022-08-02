@@ -39,6 +39,7 @@ namespace cxnd
 		bool scaleEnabled();
 		bool translateEnabled();
 		void setRotateEnabled(bool enabled);
+        void setRotateLimit(bool limit);
 		void setScaleEnabled(bool enabled);
 		void setTranslateEnabled(bool enabled);
 		virtual void fittingBox(const trimesh::box3& box, bool resetDir = true, CameraViewDirection vd = CameraViewDirection::front);
@@ -65,7 +66,8 @@ namespace cxnd
 		bool m_rotateEnabled;
 		bool m_scaleEnabled;
 		bool m_translateEnabled;
-
+        bool m_rotateLimit;
+        
 		float m_width;
 		float m_height;
 

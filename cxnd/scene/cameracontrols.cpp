@@ -12,6 +12,7 @@ namespace cxnd
 		, m_camera(nullptr)
 		, m_minFovy(2.0f)
 		, m_maxFovy(50.0f)
+        , m_rotateLimit(true)
 	{
 
 	}
@@ -66,6 +67,11 @@ namespace cxnd
 	{
 		m_rotateEnabled = enabled;
 	}
+    
+    void CameraControls::setRotateLimit(bool limit)
+    {
+        m_rotateLimit = limit;
+    }
 
 	void CameraControls::setScaleEnabled(bool enabled)
 	{

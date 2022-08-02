@@ -33,6 +33,9 @@ namespace cxnd
 
 		void performTranslate(MouseSnap& snap1, MouseSnap& snap2);
 		void performRotate(MouseSnap& snap1, MouseSnap& snap2);
+        void performRotateLimit(MouseSnap& snap1, MouseSnap& snap2);
+        void performRotateFreedom(MouseSnap& snap1, MouseSnap& snap2);
+        
 	protected:
 		MouseSnap m_lastSnap;
 		TouchSnap m_lastTouch;

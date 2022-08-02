@@ -187,51 +187,101 @@ namespace cxnd
 
 	void OrbitControls::performRotate(MouseSnap& snap1, MouseSnap& snap2)
 	{
-		trimesh::vec2 delta = trimesh::vec2(snap2.x - snap1.x, snap2.y - snap1.y);
-
-		float hangle = -0.1f * (float)delta.x;
-		trimesh::quaternion hq = trimesh::quaternion::fromAxisAndAngle(trimesh::vec3(0.0f, 0.0f, 1.0f), hangle);
-
-		trimesh::vec3 viewCenter = m_camera->viewCenter;
-		trimesh::vec3 position = m_camera->position;
-		trimesh::vec3 horizontal = m_camera->horizontal();
-
-		trimesh::vec3 h = hq * horizontal;
-		trimesh::normalize(h);
-
-		float vangle = m_camera->verticalAngle() + 0.003f * (float)delta.y;
-		if (vangle < 0.0f) vangle = 0.0f;
-		if (vangle > M_PI) vangle = (float)M_PI;
-
-		trimesh::vec3 dir;
-		trimesh::vec3 right = h;
-		if (vangle > 0.0f && vangle < M_PI)
-		{
-			dir = trimesh::vec3(-h.y, h.x, 0.0f);
-			float z = trimesh::len(dir) / (tanf(vangle));
-			dir.z = z;
-			trimesh::normalize(dir);
-		}
-		else if (vangle <= 0.0f)
-		{
-			dir = trimesh::vec3(0.0f, 0.0f, 1.0f);
-		}
-		else if (vangle >= M_PI)
-		{
-			dir = trimesh::vec3(0.0f, 0.0f, -1.0f);
-		}
-
-		trimesh::vec3 saveDir = viewCenter - position;
-		float distance = trimesh::len(saveDir);
-
-		trimesh::vec3 newPosition = viewCenter - dir * distance;
-		trimesh::vec3 up = right TRICROSS dir;
-		
-		if (up.x == 0.0f && up.y == 0.0f && up.z == 0.0f)
-			return;
-
-		setCameraPose(newPosition, viewCenter, up);
-
-		updateNearFar(m_visualBox);
+        if (m_rotateLimit) {
+            performRotateLimit(snap1, snap2);
+        } else {
+            performRotateFreedom(snap1, snap2);
+        }
 	}
+
+    void OrbitControls::performRotateLimit(MouseSnap &snap1, MouseSnap &snap2)
+    {
+        trimesh::vec2 delta = trimesh::vec2(snap2.x - snap1.x, snap2.y - snap1.y);
+
+        float hangle = -0.1f * (float)delta.x;
+        trimesh::quaternion hq = trimesh::quaternion::fromAxisAndAngle(trimesh::vec3(0.0f, 0.0f, 1.0f), hangle);
+
+        trimesh::vec3 viewCenter = m_camera->viewCenter;
+        trimesh::vec3 position = m_camera->position;
+        trimesh::vec3 horizontal = m_camera->horizontal();
+
+        trimesh::vec3 h = hq * horizontal;
+        trimesh::normalize(h);
+
+        float vangle = m_camera->verticalAngle() + 0.003f * (float)delta.y;
+        if (vangle < 0.0f) vangle = 0.0f;
+        if (vangle > M_PI) vangle = (float)M_PI;
+
+        trimesh::vec3 dir;
+        trimesh::vec3 right = h;
+        if (vangle > 0.0f && vangle < M_PI)
+        {
+            dir = trimesh::vec3(-h.y, h.x, 0.0f);
+            float z = trimesh::len(dir) / (tanf(vangle));
+            dir.z = z;
+            trimesh::normalize(dir);
+        }
+        else if (vangle <= 0.0f)
+        {
+            dir = trimesh::vec3(0.0f, 0.0f, 1.0f);
+        }
+        else if (vangle >= M_PI)
+        {
+            dir = trimesh::vec3(0.0f, 0.0f, -1.0f);
+        }
+
+        trimesh::vec3 saveDir = viewCenter - position;
+        float distance = trimesh::len(saveDir);
+
+        trimesh::vec3 newPosition = viewCenter - dir * distance;
+        trimesh::vec3 up = right TRICROSS dir;
+        
+        if (up.x == 0.0f && up.y == 0.0f && up.z == 0.0f)
+            return;
+
+        setCameraPose(newPosition, viewCenter, up);
+
+        updateNearFar(m_visualBox);
+    }
+
+    void OrbitControls::performRotateFreedom(MouseSnap& snap1, MouseSnap& snap2)
+    {
+        trimesh::vec2 delta = trimesh::vec2(snap2.x - snap1.x, snap2.y - snap1.y);
+        delta = trimesh::vec2(delta.x, -delta.y);
+        
+        trimesh::vec3 viewCenter = m_camera->viewCenter;
+        trimesh::vec3 position = m_camera->position;
+        trimesh::vec3 horizontal = m_camera->horizontal();
+        
+        trimesh::vec3 worldCenter = viewCenter;
+        trimesh::vec3 target = position - worldCenter;
+        float radius = trimesh::length(target);
+        trimesh::normalize(target);
+        
+        float sensitive = 0.004f * radius;
+        
+        trimesh::vec3 right = m_camera->upVector TRICROSS target;
+        trimesh::normalize(right);
+        
+        trimesh::vec3 up = target TRICROSS right;
+        trimesh::normalize(up);
+        
+        trimesh::vec3 offset = (up * delta.y + right * delta.x) * sensitive;
+        
+        float len = trimesh::length(offset);
+        
+        float angle = -len / radius;
+        trimesh::normalize(offset);
+        
+        float cr = cos(angle) * radius, sr = sin(angle) * radius;
+        
+        trimesh::vec3 newPosition = worldCenter + trimesh::vec3(target.x * cr + offset.x * sr,
+                                                   target.y * cr + offset.y * sr,
+                                                   target.z * cr + offset.z * sr);
+        setCameraPose(newPosition, viewCenter, up);
+
+        updateNearFar(m_visualBox);
+    }
+
+    
 }
