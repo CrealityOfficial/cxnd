@@ -50,9 +50,10 @@ namespace cxnd
         void scaleCamera(float factor);
         
 		void setVisualBox(const trimesh::box3& box);
-	protected:
+
 		void notifyViewMatrix();
 		void notifyProjectionMatrix();
+	protected:
 		void notifyScreenSize(float width, float height);
 
 		void onResize(float width, float height) override;

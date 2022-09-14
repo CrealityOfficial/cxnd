@@ -5,6 +5,7 @@
 #include "trimesh2/XForm.h"
 #include "trimesh2/Box.h"
 #include "cxnd/struct/ray.h"
+#include <vector>
 
 namespace cxnd
 {
@@ -24,11 +25,38 @@ namespace cxnd
         bottom = 5
     };
 
+	struct CXND_API CameraMeta
+	{
+		CameraProjectionType type;
+
+		trimesh::vec3 viewCenter;
+		trimesh::vec3 upVector;
+		trimesh::vec3 position;
+
+		float fNear;
+		float fFar;
+		float fovy;
+		float aspectRatio;
+
+		float top;
+		float bottom;
+		float left;
+		float right;
+
+		trimesh::fxform viewMatrix();
+		trimesh::fxform posMatrix();
+		trimesh::fxform projectionMatrix();
+	};
+
+	void createCameraPoints(CameraMeta* meta, std::vector<trimesh::vec3>& positions);
+
 	class CXND_API Camera
 	{
 	public:
 		Camera();
 		~Camera();
+
+		CameraMeta traitMeta();
 
 		trimesh::fxform viewMatrix();
 		trimesh::fxform posMatrix();

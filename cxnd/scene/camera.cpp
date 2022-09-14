@@ -5,6 +5,50 @@ const float DEFAULT_FOVY = 30.0;
 
 namespace cxnd
 {
+	trimesh::fxform CameraMeta::viewMatrix()
+	{
+		return trimesh::fxform::lookat(position, viewCenter, upVector);
+	}
+
+	trimesh::fxform CameraMeta::posMatrix()
+	{
+		trimesh::fxform view = viewMatrix();
+		return trimesh::inv(view);
+	}
+
+	trimesh::fxform CameraMeta::projectionMatrix()
+	{
+		trimesh::fxform xf = trimesh::fxform::identity();
+		if (type == CameraProjectionType::ePerspective) {
+			xf = trimesh::fxform::perspective(fovy, aspectRatio, fNear, fFar);
+		}
+		else {
+			xf = trimesh::fxform::ortho(left, right, bottom, top, fNear, fFar);
+		}
+		return xf;
+	}
+
+	void createCameraPoints(CameraMeta* meta, std::vector<trimesh::vec3>& positions)
+	{
+		positions.resize(9);
+		positions.at(0) = trimesh::vec3(0.0f, 0.0f, 0.0f);
+		float nZ = -meta->fNear;
+		float fZ = -meta->fFar;
+		float nY = meta->fNear * tanf(meta->fovy * M_PIf / 360.0f);
+		float fY = meta->fFar * tanf(meta->fovy * M_PIf / 360.0f);
+		float nX = meta->aspectRatio * nY;
+		float fX = meta->aspectRatio * fY;
+
+		positions.at(1) = trimesh::vec3(nX, nY, nZ);
+		positions.at(2) = trimesh::vec3(-nX, nY, nZ);
+		positions.at(3) = trimesh::vec3(-nX, -nY, nZ);
+		positions.at(4) = trimesh::vec3(nX, -nY, nZ);
+		positions.at(5) = trimesh::vec3(fX, fY, fZ);
+		positions.at(6) = trimesh::vec3(-fX, fY, fZ);
+		positions.at(7) = trimesh::vec3(-fX, -fY, fZ);
+		positions.at(8) = trimesh::vec3(fX, -fY, fZ);
+	}
+
 	Camera::Camera()
 		: fovy(DEFAULT_FOVY)
 		, fNear(1.0f)
@@ -24,6 +68,28 @@ namespace cxnd
 	Camera::~Camera()
 	{
 
+	}
+
+	CameraMeta Camera::traitMeta()
+	{
+		CameraMeta meta;
+
+		meta.type = type;
+		meta.viewCenter = viewCenter;
+		meta.upVector = upVector;
+		meta.position = position;
+
+		meta.fNear = fNear;
+		meta.fFar = fFar;
+		meta.fovy = fovy;
+		meta.aspectRatio = aspectRatio;
+
+		meta.top = top;
+		meta.bottom = bottom;
+		meta.left = left;
+		meta.right = right;
+
+		return meta;
 	}
 
 	trimesh::fxform Camera::viewMatrix()
