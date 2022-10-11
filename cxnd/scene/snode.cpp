@@ -289,4 +289,12 @@ namespace cxnd
 	{
 		updateMatrix();
 	}
+
+	ModelPosParam SNode::modelParam()
+	{
+		ModelPosParam param;
+		param.mxf = globalMatrix();
+		param.q = localQuaternion();
+		return param;
+	}
 }

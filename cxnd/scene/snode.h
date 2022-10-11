@@ -9,6 +9,12 @@
 
 namespace cxnd
 {
+	struct ModelPosParam
+	{
+		trimesh::quaternion q;
+		trimesh::fxform mxf;
+	};
+
 	class CXND_API SNode
 	{
 	public:
@@ -54,6 +60,8 @@ namespace cxnd
 		void roateCC(int index, int count);  //test
 		void applyVisualMatrix(const trimesh::fxform& xf);
 		void updateVisual();
+
+		ModelPosParam modelParam();
 	protected:
 		void applyXf(const trimesh::fxform& xf);
 	protected:
