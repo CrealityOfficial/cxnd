@@ -213,6 +213,8 @@ namespace cxnd
         trimesh::vec3 dir = trimesh::vec3(0.0f, -1.0f, 0.0f);
         switch (vd) {
             case CameraViewDirection::front:
+				up = trimesh::vec3(0.0f, 0.0f, 1.0f);
+				dir = trimesh::vec3(0.0f, -1.0f, 0.0f);
                 break;
             
             case CameraViewDirection::top:
@@ -220,6 +222,9 @@ namespace cxnd
                 dir = trimesh::vec3(0.0f, 0.0f, 1.0f);
                 break;
             
+			case CameraViewDirection::back:
+				up = trimesh::vec3(0.0f, 0.0f, 1.0f);
+				dir = trimesh::vec3(0.0f, 1.0f, 0.0f);
             default:
                 break;
         }
