@@ -100,6 +100,7 @@ namespace cxnd
 		if (!m_camera)
 			return;
 
+		LOGI("CameraControls fovy [%f]", m_camera->fovy);
 		trimesh::fxform xform = m_camera->projectionMatrix();
 
 		notify([&xform](CameraTracer* tracer) {
@@ -156,6 +157,19 @@ namespace cxnd
 		float minFovy = m_minFovy;
 		float fovy = m_camera->fovy;
 		fovy /= factor;
+		if (fovy >= minFovy && fovy <= maxFovy)
+			m_camera->fovy = fovy;
+
+		notifyProjectionMatrix();
+	}
+
+	void CameraControls::setCameraFovy(float fovy)
+	{
+		if (!m_camera)
+			return;
+
+		float maxFovy = m_maxFovy;
+		float minFovy = m_minFovy;
 		if (fovy >= minFovy && fovy <= maxFovy)
 			m_camera->fovy = fovy;
 

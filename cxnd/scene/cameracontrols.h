@@ -48,6 +48,7 @@ namespace cxnd
         void setCameraPose(const trimesh::vec3& position, const trimesh::vec3& viewCenter,
             const trimesh::vec3& upVector);
         void scaleCamera(float factor);
+		void setCameraFovy(float fovy);
         
 		void setVisualBox(const trimesh::box3& box);
 
