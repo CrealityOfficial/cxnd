@@ -100,7 +100,7 @@ namespace cxnd
 		if (!m_camera)
 			return;
 
-		LOGI("CameraControls fovy [%f]", m_camera->fovy);
+		//LOGI("CameraControls fovy [%f]", m_camera->fovy);
 		trimesh::fxform xform = m_camera->projectionMatrix();
 
 		notify([&xform](CameraTracer* tracer) {
