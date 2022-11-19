@@ -71,7 +71,8 @@ namespace cxnd
 		void updateNearFar(const trimesh::box3& box);
 		void setSize(int width, int height);
         float defaultFovy();
-        
+		void liftZ(float z);
+
 		CameraProjectionType type;
 
 		trimesh::vec3 viewCenter;

@@ -274,4 +274,10 @@ namespace cxnd
     {
         return DEFAULT_FOVY;
     }
+
+	void Camera::liftZ(float z)
+	{
+		position.z += z;
+		viewCenter.z += z;
+	}
 }
