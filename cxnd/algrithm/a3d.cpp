@@ -233,7 +233,7 @@ namespace cxnd
 
 	trimesh::box3 extendBoxXY(const trimesh::box3& box, const trimesh::vec3& center)
 	{
-		float xmax = std::max(std::fabs(box.max.x - center.x), 
+		float xmax = std::max(std::fabs(box.max.x - center.x),
 							std::fabs(box.min.x - center.x));
 		float ymax = std::max(std::fabs(box.max.y - center.y),
 							std::fabs(box.min.y - center.y));
