@@ -2,8 +2,6 @@ __cc_find(Trimesh2)
 __assert_target(trimesh2)
 
 set(SRCS cxnd/interface.h
-		 cxnd/algrithm/dumplicate.h
-		 cxnd/algrithm/dumplicate.cpp
 		 cxnd/algrithm/merge.h
 		 cxnd/algrithm/merge.cpp
 		 cxnd/algrithm/a3d.h
