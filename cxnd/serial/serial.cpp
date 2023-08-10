@@ -9,40 +9,40 @@ namespace cxnd
 	bool cxndSave(Serializeable& serializeable, const std::wstring& fileName, ccglobal::Tracer* tracer)
 	{
 		std::string name = wstring2String(fileName);
-		FILE* f = boost::nowide::fopen(name.c_str(), "wb");
 
-		if (!f)
+		std::fstream out(fileName, std::ios::out | std::ios::binary);
+		if (!out.is_open())
 		{
 			LOGE("cxndSave error. [%s]", name.c_str());
+			out.close();
 			return false;
 		}
 
-		std::fstream out(f);
+
 		int ver = serializeable.version();
 		out.write((const char*)&ver, sizeof(int));
 		bool result = serializeable.save(out, tracer);
 
-		fclose(f);
+		out.close();
 		return result;
 	}
 
 	bool cxndLoad(Serializeable& serializeable, const std::wstring& fileName, ccglobal::Tracer* tracer)
 	{
 		std::string name = wstring2String(fileName);
-		FILE* f = boost::nowide::fopen(name.c_str(), "rb");
 
-		if (!f)
+		std::fstream in(fileName, std::ios::in | std::ios::binary);
+		if (!in.is_open())
 		{
 			LOGE("cxndSave error. [%s]", name.c_str());
 			return false;
 		}
 
-		std::fstream in(f);
 		int ver = -1;
 		in.read((char*)&ver, sizeof(int));
 		bool result = serializeable.load(in, ver, tracer);
 
-		fclose(f);
+		in.close();
 		return result;
 	}
 }
