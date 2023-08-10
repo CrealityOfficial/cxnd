@@ -1,4 +1,5 @@
 #include "a2d.h"
+#include <math.h>
 
 namespace cxnd
 {

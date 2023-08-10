@@ -1,5 +1,7 @@
 #include "a3d.h"
-#include<limits.h>
+#include <limits.h>
+#include <math.h>
+
 namespace cxnd
 {
 	bool rayIntersectTriangle(const trimesh::vec3& orig, const trimesh::vec3& dir,
