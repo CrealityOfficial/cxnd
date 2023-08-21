@@ -25,7 +25,7 @@ namespace cxnd
 	}
 
 	template<class T>
-	void cxndSaveT(std::fstream& out, T& t)
+	void cxndSaveT(std::fstream& out, const T& t)
 	{
 		out.write((const char*)&t, sizeof(T));
 	}
@@ -43,7 +43,7 @@ namespace cxnd
 	}
 
 	template<class T>
-	void cxndSaveVectorT(std::fstream& out, std::vector<T>& vecs)
+	void cxndSaveVectorT(std::fstream& out, const std::vector<T>& vecs)
 	{
 		int num = (int)vecs.size();
 		cxndSaveT(out, num);
