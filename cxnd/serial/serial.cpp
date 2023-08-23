@@ -10,7 +10,7 @@ namespace cxnd
 	{
 		std::string name = wstring2String(fileName);
 
-		std::fstream out(name, std::ios::out | std::ios::binary);
+		boost::nowide::fstream out(name, std::ios::out | std::ios::binary);
 		if (!out.is_open())
 		{
 			LOGE("cxndSave error. [%s]", name.c_str());
@@ -31,7 +31,7 @@ namespace cxnd
 	{
 		std::string name = wstring2String(fileName);
 
-		std::fstream in(name, std::ios::in | std::ios::binary);
+		boost::nowide::fstream in(name, std::ios::in | std::ios::binary);
 		if (!in.is_open())
 		{
 			LOGE("cxndSave error. [%s]", name.c_str());
