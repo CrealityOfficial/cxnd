@@ -6,7 +6,7 @@ __assert_target(boost_nowide)
 __files_group(${CMAKE_CURRENT_SOURCE_DIR}/cxnd/ SRCS)
 		
 set(INCS)
-set(LIBS trimesh2 boost_nowide)
+set(ILIBS trimesh2 boost_nowide)
 set(DEFS)
 
 __add_common_library(cxnd)
