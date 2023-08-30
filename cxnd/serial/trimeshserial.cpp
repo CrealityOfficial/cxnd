@@ -3,7 +3,7 @@
 
 namespace cxnd
 {
-	trimesh::TriMesh* loadTrimesh(boost::nowide::fstream& in)
+	trimesh::TriMesh* loadTrimesh(std::fstream& in)
 	{
 		trimesh::TriMesh* mesh = nullptr;
 		int have = 0;
@@ -24,7 +24,7 @@ namespace cxnd
 		return mesh;
 	}
 
-	bool loadTrimesh(boost::nowide::fstream& in, trimesh::TriMesh& mesh)
+	bool loadTrimesh(std::fstream& in, trimesh::TriMesh& mesh)
 	{
 		int have = 0;
 		cxndLoadT<int>(in, have);
@@ -44,7 +44,7 @@ namespace cxnd
 		return false;
 	}
 
-	void saveTrimesh(boost::nowide::fstream& out, trimesh::TriMesh* mesh)
+	void saveTrimesh(std::fstream& out, trimesh::TriMesh* mesh)
 	{
 		int have = mesh ? 1 : 0;
 		cxndSaveT<int>(out, have);
@@ -60,7 +60,7 @@ namespace cxnd
 		}
 	}
 
-	void saveTrimesh(boost::nowide::fstream& out, const trimesh::TriMesh& mesh)
+	void saveTrimesh(std::fstream& out, const trimesh::TriMesh& mesh)
 	{
 		int have = 1;
 		cxndSaveT<int>(out, have);
@@ -76,7 +76,7 @@ namespace cxnd
 		}
 	}
 
-	void loadPolys(boost::nowide::fstream& in, CXNDPolygons& polys)
+	void loadPolys(std::fstream& in, CXNDPolygons& polys)
 	{
 		int size = 0;
 		cxndLoadT(in, size);
@@ -88,7 +88,7 @@ namespace cxnd
 		}
 	}
 
-	void savePolys(boost::nowide::fstream& out, const CXNDPolygons& polys)
+	void savePolys(std::fstream& out, const CXNDPolygons& polys)
 	{
 		int size = (int)polys.size();
 		cxndSaveT(out, size);
@@ -111,13 +111,13 @@ namespace cxnd
 		return 0;
 	}
 
-	bool CXNDPolygonsWrapper::save(boost::nowide::fstream& out, ccglobal::Tracer* tracer)
+	bool CXNDPolygonsWrapper::save(std::fstream& out, ccglobal::Tracer* tracer)
 	{
 		savePolys(out, polys);
 		return true;
 	}
 
-	bool CXNDPolygonsWrapper::load(boost::nowide::fstream& in, int ver, ccglobal::Tracer* tracer)
+	bool CXNDPolygonsWrapper::load(std::fstream& in, int ver, ccglobal::Tracer* tracer)
 	{
 		if (ver == 0)
 		{

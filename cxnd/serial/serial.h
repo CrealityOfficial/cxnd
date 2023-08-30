@@ -12,27 +12,27 @@ namespace cxnd
 		virtual ~Serializeable() {}
 
 		virtual int version() = 0;
-		virtual bool save(boost::nowide::fstream& out, ccglobal::Tracer* tracer) = 0;
-		virtual bool load(boost::nowide::fstream& in, int ver, ccglobal::Tracer* tracer) = 0;
+		virtual bool save(std::fstream& out, ccglobal::Tracer* tracer) = 0;
+		virtual bool load(std::fstream& in, int ver, ccglobal::Tracer* tracer) = 0;
 	};
 
-	CXND_API bool cxndSave(Serializeable& serializeable, const std::wstring& fileName, ccglobal::Tracer* tracer = nullptr);
-	CXND_API bool cxndLoad(Serializeable& serializeable, const std::wstring& fileName, ccglobal::Tracer* tracer = nullptr);
+	CXND_API bool cxndSave(Serializeable& serializeable, const std::string& fileName, ccglobal::Tracer* tracer = nullptr);
+	CXND_API bool cxndLoad(Serializeable& serializeable, const std::string& fileName, ccglobal::Tracer* tracer = nullptr);
 
 	template<class T>
-	void cxndLoadT(boost::nowide::fstream& in, T& t)
+	void cxndLoadT(std::fstream& in, T& t)
 	{
 		in.read((char*)&t, sizeof(T));
 	}
 
 	template<class T>
-	void cxndSaveT(boost::nowide::fstream& out, const T& t)
+	void cxndSaveT(std::fstream& out, const T& t)
 	{
 		out.write((const char*)&t, sizeof(T));
 	}
 
 	template<class T>
-	void cxndLoadVectorT(boost::nowide::fstream& in, std::vector<T>& vecs)
+	void cxndLoadVectorT(std::fstream& in, std::vector<T>& vecs)
 	{
 		int num = 0;
 		cxndLoadT(in, num);
@@ -44,7 +44,7 @@ namespace cxnd
 	}
 
 	template<class T>
-	void cxndSaveVectorT(boost::nowide::fstream& out, const std::vector<T>& vecs)
+	void cxndSaveVectorT(std::fstream& out, const std::vector<T>& vecs)
 	{
 		int num = (int)vecs.size();
 		cxndSaveT(out, num);
