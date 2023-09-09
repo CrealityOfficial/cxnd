@@ -1,7 +1,4 @@
 #include "serial.h"
-#include "cxnd/string/util.h"
-
-#include "boost/nowide/cstdio.hpp"
 #include "ccglobal/log.h"
 
 namespace cxnd

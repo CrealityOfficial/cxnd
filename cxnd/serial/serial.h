@@ -2,7 +2,6 @@
 #define CXND_SERIAL_1691646227051_H
 #include "cxnd/interface.h"
 #include "ccglobal/tracer.h"
-#include "boost/nowide/fstream.hpp"
 
 namespace cxnd
 {
