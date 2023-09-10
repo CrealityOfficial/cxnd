@@ -17,4 +17,30 @@ namespace cxnd
 		std::wstring tmp = std::wstring(wc);
 		return wstring2String(tmp);
 	}
+
+	std::vector<std::string> splitString(const std::string& str, const std::string& delim)
+	{
+		std::vector<std::string> elems;
+		size_t pos = 0;
+		size_t len = str.length();
+		size_t delim_len = delim.length();
+		if (delim_len == 0)
+			return elems;
+		while (pos < len)
+		{
+			int find_pos = str.find(delim, pos);
+			if (find_pos < 0)
+			{
+				std::string t = str.substr(pos, len - pos);
+				if (!t.empty())
+					elems.push_back(t);
+				break;
+			}
+			std::string t = str.substr(pos, find_pos - pos);
+			if (!t.empty())
+				elems.push_back(t);
+			pos = find_pos + delim_len;
+		}
+		return elems;
+	}
 }
